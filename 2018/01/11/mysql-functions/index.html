@@ -79,14 +79,17 @@
 
 
 
+<meta name="description" content="最近迁移数据的需求较多，用到了平时业务中不常用的函数，因此写一片关于mysql函数的文章，作为使用的函数积累。 1 concat &amp;amp; right 对字段补齐18位1concat(exam_unique, right(exam_unique,18-char_length(exam_unique)) ) 2 trim()1SUBSTRING(TRIM(TRAILING &apos;&amp;#125;&amp;#125">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mysql distinct和group by 唯一键导致结果不准确的问题(bug)">
-<meta property="og:url" content="http://yoursite.com/2018/01/11/mysql-distinct和group-by-唯一键导致结果不准确的问题-bug/index.html">
+<meta property="og:title" content="mysql-functions">
+<meta property="og:url" content="http://yoursite.com/2018/01/11/mysql-functions/index.html">
 <meta property="og:site_name" content="Mag&#39;s Note">
+<meta property="og:description" content="最近迁移数据的需求较多，用到了平时业务中不常用的函数，因此写一片关于mysql函数的文章，作为使用的函数积累。 1 concat &amp;amp; right 对字段补齐18位1concat(exam_unique, right(exam_unique,18-char_length(exam_unique)) ) 2 trim()1SUBSTRING(TRIM(TRAILING &apos;&amp;#125;&amp;#125">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-01-10T16:44:49.298Z">
+<meta property="og:updated_time" content="2018-01-10T17:06:36.380Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="mysql distinct和group by 唯一键导致结果不准确的问题(bug)">
+<meta name="twitter:title" content="mysql-functions">
+<meta name="twitter:description" content="最近迁移数据的需求较多，用到了平时业务中不常用的函数，因此写一片关于mysql函数的文章，作为使用的函数积累。 1 concat &amp;amp; right 对字段补齐18位1concat(exam_unique, right(exam_unique,18-char_length(exam_unique)) ) 2 trim()1SUBSTRING(TRIM(TRAILING &apos;&amp;#125;&amp;#125">
 
 
 
@@ -116,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/11/mysql-distinct和group-by-唯一键导致结果不准确的问题-bug/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/01/11/mysql-functions/"/>
 
 
 
 
 
-  <title>mysql distinct和group by 唯一键导致结果不准确的问题(bug) | Mag's Note</title>
+  <title>mysql-functions | Mag's Note</title>
   
 
 
@@ -269,7 +272,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/11/mysql-distinct和group-by-唯一键导致结果不准确的问题-bug/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/11/mysql-functions/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Mag Bing">
@@ -286,7 +289,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">mysql distinct和group by 唯一键导致结果不准确的问题(bug)</h1>
+          <h1 class="post-title" itemprop="name headline">mysql-functions</h1>
         
 
         <div class="post-meta">
@@ -298,7 +301,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-11T00:44:49+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-11T00:51:50+08:00">
                 2018-01-11
               </time>
             
@@ -308,6 +311,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mysql/" itemprop="url" rel="index">
+                    <span itemprop="name">mysql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -336,7 +361,13 @@
       
 
       
-        
+        <p>最近迁移数据的需求较多，用到了平时业务中不常用的函数，因此写一片关于mysql函数的文章，作为使用的函数积累。</p>
+<h4 id="1-concat-amp-right-对字段补齐18位"><a href="#1-concat-amp-right-对字段补齐18位" class="headerlink" title="1 concat &amp; right 对字段补齐18位"></a>1 concat &amp; right 对字段补齐18位</h4><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">concat(<span class="name">exam_unique</span>, right(<span class="name">exam_unique</span>,<span class="number">18</span>-char_length(<span class="name">exam_unique</span>)) )</span><br></pre></td></tr></table></figure>
+<h4 id="2-trim"><a href="#2-trim" class="headerlink" title="2 trim()"></a>2 <a href="https://dev.mysql.com/doc/refman/5.7/en/string-functions.html#function_trim" title="Title" target="_blank" rel="noopener">trim()</a></h4><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SUBSTRING(<span class="name">TRIM</span>(<span class="name">TRAILING</span> '&#125;&#125;' FROM stat_growth_json),<span class="number">15</span>,<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight ruleslanguage"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">SELECT</span> <span class="keyword">TRIM</span>(<span class="string">'  bar   '</span>);</span><br><span class="line">        -&gt; <span class="string">'bar'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> <span class="keyword">TRIM</span>(LEADING <span class="string">'x'</span> <span class="keyword">FROM</span> <span class="string">'xxxbarxxx'</span>);</span><br><span class="line">        -&gt; <span class="string">'barxxx'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> <span class="keyword">TRIM</span>(BOTH <span class="string">'x'</span> <span class="keyword">FROM</span> <span class="string">'xxxbarxxx'</span>);</span><br><span class="line">        -&gt; <span class="string">'bar'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> <span class="keyword">TRIM</span>(TRAILING <span class="string">'xyz'</span> <span class="keyword">FROM</span> <span class="string">'barxxyz'</span>);</span><br><span class="line">        -&gt; <span class="string">'barx'</span></span><br></pre></td></tr></table></figure>
+<h4 id="3-substring"><a href="#3-substring" class="headerlink" title="3 substring()"></a>3 substring()</h4><figure class="highlight ruleslanguage"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">SELECT</span> SUBSTRING(<span class="string">'Quadratically'</span>,<span class="number">5</span>);</span><br><span class="line">        -&gt; <span class="string">'ratically'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> SUBSTRING(<span class="string">'foobarbar'</span> <span class="keyword">FROM</span> <span class="number">4</span>);</span><br><span class="line">        -&gt; <span class="string">'barbar'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> SUBSTRING(<span class="string">'Quadratically'</span>,<span class="number">5</span>,<span class="number">6</span>);</span><br><span class="line">        -&gt; <span class="string">'ratica'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> SUBSTRING(<span class="string">'Sakila'</span>, <span class="number">-3</span>);</span><br><span class="line">        -&gt; <span class="string">'ila'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> SUBSTRING(<span class="string">'Sakila'</span>, <span class="number">-5</span>, <span class="number">3</span>);</span><br><span class="line">        -&gt; <span class="string">'aki'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> SUBSTRING(<span class="string">'Sakila'</span> <span class="keyword">FROM</span> <span class="number">-4</span> <span class="keyword">FOR</span> <span class="number">2</span>);</span><br><span class="line">        -&gt; <span class="string">'ki'</span></span><br></pre></td></tr></table></figure>
+<p>参考：<br><a href="https://dev.mysql.com/doc/refman/5.7/en/string-functions.html#function_trim" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.7/en/string-functions.html#function_trim</a></p>
+
       
     </div>
     
@@ -360,8 +391,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/10/satlstack_install/" rel="next" title="satlstack_install">
-                <i class="fa fa-chevron-left"></i> satlstack_install
+              <a href="/2018/01/11/mysql-distinct和group-by-唯一键导致结果不准确的问题-bug/" rel="next" title="mysql distinct和group by 唯一键导致结果不准确的问题(bug)">
+                <i class="fa fa-chevron-left"></i> mysql distinct和group by 唯一键导致结果不准确的问题(bug)
               </a>
             
           </div>
@@ -369,10 +400,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/01/11/mysql-functions/" rel="prev" title="mysql-functions">
-                mysql-functions <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -424,8 +451,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -495,6 +531,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-concat-amp-right-对字段补齐18位"><span class="nav-text">1 concat &amp; right 对字段补齐18位</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-trim"><span class="nav-text">2 trim()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-substring"><span class="nav-text">3 substring()</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
