@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="mysql group by,mysql distinct,mysql bug," />
 
 
 
@@ -79,13 +79,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Mag&#39;s Note">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="1 group &amp;amp;&amp;amp; distinct问题发现 测试数据库：mysql-5.7.19 \研发在执行group by 排重操作时没有结合聚合函数使用（习惯问题），导致结果不准确，紧急排查线上（5.7.15），没有发现问题。线上5.7.19及5.7.20版本均出现问题，通知所有研发group by结合聚合函数使，排查已有的业务sql，distinct尽量使用group by排重。  1">
+<meta name="keywords" content="mysql group by,mysql distinct,mysql bug">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mysql-distinct和group by使用唯一键导致结果不准确的bug">
+<meta property="og:url" content="http://yoursite.com/2018/01/13/mysql-distinct和group-by-唯一键导致结果不准确的bug/index.html">
 <meta property="og:site_name" content="Mag&#39;s Note">
+<meta property="og:description" content="1 group &amp;amp;&amp;amp; distinct问题发现 测试数据库：mysql-5.7.19 \研发在执行group by 排重操作时没有结合聚合函数使用（习惯问题），导致结果不准确，紧急排查线上（5.7.15），没有发现问题。线上5.7.19及5.7.20版本均出现问题，通知所有研发group by结合聚合函数使，排查已有的业务sql，distinct尽量使用group by排重。  1">
 <meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-01-13T10:34:45.565Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mag&#39;s Note">
+<meta name="twitter:title" content="mysql-distinct和group by使用唯一键导致结果不准确的bug">
+<meta name="twitter:description" content="1 group &amp;amp;&amp;amp; distinct问题发现 测试数据库：mysql-5.7.19 \研发在执行group by 排重操作时没有结合聚合函数使用（习惯问题），导致结果不准确，紧急排查线上（5.7.15），没有发现问题。线上5.7.19及5.7.20版本均出现问题，通知所有研发group by结合聚合函数使，排查已有的业务sql，distinct尽量使用group by排重。  1">
 
 
 
@@ -115,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/01/13/mysql-distinct和group-by-唯一键导致结果不准确的bug/"/>
 
 
 
 
 
-  <title>Mag's Note</title>
+  <title>mysql-distinct和group by使用唯一键导致结果不准确的bug | Mag's Note</title>
   
 
 
@@ -140,8 +145,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -254,9 +258,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -286,9 +290,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/13/mysql-distinct和group-by-唯一键导致结果不准确的bug/" itemprop="url">mysql-distinct和group by使用唯一键导致结果不准确的bug</a></h1>
+          <h1 class="post-title" itemprop="name headline">mysql-distinct和group by使用唯一键导致结果不准确的bug</h1>
         
 
         <div class="post-meta">
@@ -360,9 +362,7 @@
       
 
       
-        
-          
-            <h3 id="1-group-amp-amp-distinct问题发现"><a href="#1-group-amp-amp-distinct问题发现" class="headerlink" title="1 group &amp;&amp; distinct问题发现"></a>1 group &amp;&amp; distinct问题发现</h3><blockquote>
+        <h3 id="1-group-amp-amp-distinct问题发现"><a href="#1-group-amp-amp-distinct问题发现" class="headerlink" title="1 group &amp;&amp; distinct问题发现"></a>1 group &amp;&amp; distinct问题发现</h3><blockquote>
 <p>测试数据库：mysql-5.7.19 \<br>研发在执行group by 排重操作时没有结合聚合函数使用（习惯问题），导致结果不准确，紧急排查线上（5.7.15），没有发现问题。线上5.7.19及5.7.20版本均出现问题，通知所有研发group by结合聚合函数使，排查已有的业务sql，distinct尽量使用group by排重。</p>
 </blockquote>
 <h4 id="1-1-group-by"><a href="#1-1-group-by" class="headerlink" title="1.1 group by"></a>1.1 group by</h4><p>未使用聚合函数<br><figure class="highlight lsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT con_id FROM `user_task` WHERE id IN ( <span class="number">56</span>, <span class="number">57</span>, <span class="number">58</span>, <span class="number">66</span>, <span class="number">70</span>, <span class="number">71</span>, <span class="number">76</span>, <span class="number">92</span>, <span class="number">93</span>, <span class="number">115</span>, <span class="number">141</span>, <span class="number">144</span>, <span class="number">170</span>, <span class="number">186</span>, <span class="number">187</span>, <span class="number">190</span>, <span class="number">197</span>, <span class="number">222</span>, <span class="number">236</span>, <span class="number">241</span>, <span class="number">242</span>, <span class="number">248</span>, <span class="number">257</span>, <span class="number">258</span>, <span class="number">262</span>, <span class="number">263</span>, <span class="number">268</span>, <span class="number">270</span>, <span class="number">282</span>, <span class="number">288</span>, <span class="number">290</span>, <span class="number">293</span>, <span class="number">301</span>, <span class="number">307</span>, <span class="number">310</span>, <span class="number">320</span>, <span class="number">322</span>, <span class="number">328</span>, <span class="number">333</span>, <span class="number">337</span>, <span class="number">338</span>, <span class="number">340</span>, <span class="number">345</span>, <span class="number">350</span>, <span class="number">352</span>, <span class="number">367</span>, <span class="number">369</span>, <span class="number">376</span>, <span class="number">380</span>, <span class="number">383</span>, <span class="number">386</span>, <span class="number">392</span>, <span class="number">396</span>, <span class="number">400</span> ) GROUP BY con_id;</span><br><span class="line">+--------+</span><br><span class="line">| con_id |</span><br><span class="line">+--------+</span><br><span class="line">|    <span class="number">785</span> |</span><br><span class="line">+--------+</span><br><span class="line"><span class="number">1</span> row in set (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; explain  SELECT con_id FROM `user_task` WHERE id IN ( <span class="number">56</span>, <span class="number">57</span>, <span class="number">58</span>, <span class="number">66</span>, <span class="number">70</span>, <span class="number">71</span>, <span class="number">76</span>, <span class="number">92</span>, <span class="number">93</span>, <span class="number">115</span>, <span class="number">141</span>, <span class="number">144</span>, <span class="number">170</span>, <span class="number">186</span>, <span class="number">187</span>, <span class="number">190</span>, <span class="number">197</span>, <span class="number">222</span>, <span class="number">236</span>, <span class="number">241</span>, <span class="number">242</span>, <span class="number">248</span>, <span class="number">257</span>, <span class="number">258</span>, <span class="number">262</span>, <span class="number">263</span>, <span class="number">268</span>, <span class="number">270</span>,  <span class="number">282</span>, <span class="number">288</span>, <span class="number">290</span>, <span class="number">293</span>, <span class="number">301</span>, <span class="number">307</span>, <span class="number">310</span>, <span class="number">320</span>, <span class="number">322</span>, <span class="number">328</span>, <span class="number">333</span>, <span class="number">337</span>, <span class="number">338</span>, <span class="number">340</span>, <span class="number">345</span>, <span class="number">350</span>, <span class="number">352</span>, <span class="number">367</span>, <span class="number">369</span>, <span class="number">376</span>, <span class="number">380</span>, <span class="number">383</span>, <span class="number">386</span>, <span class="number">392</span>, <span class="number">396</span>, <span class="number">400</span> ) GROUP BY con_id;</span><br><span class="line">+----+-------------+-----------+------------+-------+-----------------------+---------------+---------+------+------+----------+---------------------------------------+</span><br><span class="line">| id | select_type | table     | partitions | type  | possible_keys         | <span class="type">key</span>           | key_len | ref  | rows | filtered | Extra                                 |</span><br><span class="line">+----+-------------+-----------+------------+-------+-----------------------+---------------+---------+------+------+----------+---------------------------------------+</span><br><span class="line">|  <span class="number">1</span> | SIMPLE      | user_task | NULL       | range | PRIMARY,idx_con_title | idx_con_title | <span class="number">4</span>       | NULL |   <span class="number">17</span> |    <span class="number">23.18</span> | Using where; Using index for group-by |</span><br><span class="line">+----+-------------+-----------+------------+-------+-----------------------+---------------+---------+------+------+----------+---------------------------------------+</span><br><span class="line"><span class="number">1</span> row in set, <span class="number">1</span> warning (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure></p>
@@ -385,8 +385,6 @@
 <p><a href="https://mp.weixin.qq.com/s/vgnSqHyPCbDWGMvmKMDd3Q" target="_blank" rel="noopener">小心脏平复了–发现mysql5.7的s1（最严重）级bug后第二天</a></p>
 <p><a href="https://bugs.mysql.com/bug.php?id=87207" target="_blank" rel="noopener">Bug#87027: select distinct with secondary key for ‘Using index for group-by’ bad results</a></p>
 
-          
-        
       
     </div>
     
@@ -401,316 +399,40 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/11/mysql-functions/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mag Bing">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mag's Note">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/11/mysql-functions/" itemprop="url">mysql-functions</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-11T00:51:50+08:00">
-                2018-01-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mysql/" itemprop="url" rel="index">
-                    <span itemprop="name">mysql</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/mysql-group-by/" rel="tag"># mysql group by</a>
           
-
+            <a href="/tags/mysql-distinct/" rel="tag"># mysql distinct</a>
           
-            
+            <a href="/tags/mysql-bug/" rel="tag"># mysql bug</a>
           
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>最近迁移数据的需求较多，用到了平时业务中不常用的函数，因此写一片关于mysql函数的文章，作为使用的函数积累。</p>
-<h4 id="1-concat-amp-right-对字段补齐18位"><a href="#1-concat-amp-right-对字段补齐18位" class="headerlink" title="1 concat &amp; right 对字段补齐18位"></a>1 concat &amp; right 对字段补齐18位</h4><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">concat(<span class="name">exam_unique</span>, right(<span class="name">exam_unique</span>,<span class="number">18</span>-char_length(<span class="name">exam_unique</span>)) )</span><br></pre></td></tr></table></figure>
-<h4 id="2-trim"><a href="#2-trim" class="headerlink" title="2 trim()"></a>2 <a href="https://dev.mysql.com/doc/refman/5.7/en/string-functions.html#function_trim" title="Title" target="_blank" rel="noopener">trim()</a></h4><figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SUBSTRING(<span class="name">TRIM</span>(<span class="name">TRAILING</span> '&#125;&#125;' FROM stat_growth_json),<span class="number">15</span>,<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
-<figure class="highlight ruleslanguage"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">SELECT</span> <span class="keyword">TRIM</span>(<span class="string">'  bar   '</span>);</span><br><span class="line">        -&gt; <span class="string">'bar'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> <span class="keyword">TRIM</span>(LEADING <span class="string">'x'</span> <span class="keyword">FROM</span> <span class="string">'xxxbarxxx'</span>);</span><br><span class="line">        -&gt; <span class="string">'barxxx'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> <span class="keyword">TRIM</span>(BOTH <span class="string">'x'</span> <span class="keyword">FROM</span> <span class="string">'xxxbarxxx'</span>);</span><br><span class="line">        -&gt; <span class="string">'bar'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> <span class="keyword">TRIM</span>(TRAILING <span class="string">'xyz'</span> <span class="keyword">FROM</span> <span class="string">'barxxyz'</span>);</span><br><span class="line">        -&gt; <span class="string">'barx'</span></span><br></pre></td></tr></table></figure>
-<h4 id="3-substring"><a href="#3-substring" class="headerlink" title="3 substring()"></a>3 substring()</h4><figure class="highlight ruleslanguage"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; <span class="keyword">SELECT</span> SUBSTRING(<span class="string">'Quadratically'</span>,<span class="number">5</span>);</span><br><span class="line">        -&gt; <span class="string">'ratically'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> SUBSTRING(<span class="string">'foobarbar'</span> <span class="keyword">FROM</span> <span class="number">4</span>);</span><br><span class="line">        -&gt; <span class="string">'barbar'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> SUBSTRING(<span class="string">'Quadratically'</span>,<span class="number">5</span>,<span class="number">6</span>);</span><br><span class="line">        -&gt; <span class="string">'ratica'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> SUBSTRING(<span class="string">'Sakila'</span>, <span class="number">-3</span>);</span><br><span class="line">        -&gt; <span class="string">'ila'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> SUBSTRING(<span class="string">'Sakila'</span>, <span class="number">-5</span>, <span class="number">3</span>);</span><br><span class="line">        -&gt; <span class="string">'aki'</span></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> SUBSTRING(<span class="string">'Sakila'</span> <span class="keyword">FROM</span> <span class="number">-4</span> <span class="keyword">FOR</span> <span class="number">2</span>);</span><br><span class="line">        -&gt; <span class="string">'ki'</span></span><br></pre></td></tr></table></figure>
-<p>参考：<br><a href="https://dev.mysql.com/doc/refman/5.7/en/string-functions.html#function_trim" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.7/en/string-functions.html#function_trim</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
       
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/10/satlstack_install/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mag Bing">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Mag's Note">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/10/satlstack_install/" itemprop="url">satlstack_install</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-10T23:30:43+08:00">
-                2018-01-10
-              </time>
+              <a href="/2018/01/11/mysql-functions/" rel="next" title="mysql-functions">
+                <i class="fa fa-chevron-left"></i> mysql-functions
+              </a>
             
+          </div>
 
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/devops/" itemprop="url" rel="index">
-                    <span itemprop="name">devops</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <h3 id="1-Install-Saltstack"><a href="#1-Install-Saltstack" class="headerlink" title="1 Install Saltstack"></a>1 Install Saltstack</h3><h4 id="1-1-config-yum-repo"><a href="#1-1-config-yum-repo" class="headerlink" title="1.1 config yum repo"></a>1.1 config yum repo</h4><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;/etc/yum.repos.d/satl-stack.repo&lt;&lt;EOF</span><br><span class="line">salt-latest]</span><br><span class="line"><span class="attribute">name</span>=SaltStack Latest Release Channel <span class="keyword">for</span> RHEL/Centos <span class="variable">$releasever</span></span><br><span class="line"><span class="attribute">baseurl</span>=https://repo.saltstack.com/yum/redhat/7/$basearch/latest</span><br><span class="line"><span class="attribute">failovermethod</span>=priority</span><br><span class="line"><span class="attribute">enabled</span>=1</span><br><span class="line"><span class="attribute">gpgcheck</span>=1</span><br><span class="line"><span class="attribute">gpgkey</span>=file:///etc/pki/rpm-gpg/saltstack-signing-key</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">yum clean</span><br></pre></td></tr></table></figure>
-<h4 id="1-2-install-pip"><a href="#1-2-install-pip" class="headerlink" title="1.2 install pip"></a>1.2 install pip</h4><figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">yum </span><span class="string">install </span><span class="string">zlib*</span></span><br><span class="line"><span class="string">wget </span><span class="string">https:</span>//<span class="string">bootstrap.</span><span class="string">pypa.</span><span class="string">io/</span><span class="built_in">get-pip.py</span></span><br><span class="line"><span class="built_in">python</span> <span class="built_in">get-pip.py</span></span><br></pre></td></tr></table></figure>
-<h4 id="1-3-install-salt-with-pip"><a href="#1-3-install-salt-with-pip" class="headerlink" title="1.3 install salt with pip"></a>1.3 install salt with pip</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip <span class="keyword">install</span> <span class="keyword">salt</span></span><br></pre></td></tr></table></figure>
-<h4 id="1-4-config-master"><a href="#1-4-config-master" class="headerlink" title="1.4 config master"></a>1.4 config master</h4><blockquote>
-<p>For safe, we can specify the interface to eth0:</p>
-</blockquote>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">interface</span>: 172<span class="selector-class">.17</span><span class="selector-class">.177</span><span class="selector-class">.86</span></span><br></pre></td></tr></table></figure>
-<h3 id="2-install-salt-ssh"><a href="#2-install-salt-ssh" class="headerlink" title="2 install salt-ssh"></a>2 install salt-ssh</h3><blockquote>
-<p>为了批量在被控服务器上批量安装salt-minion, salt-master主机上安装salt-ssh, 通过salt-ssh来批量安装salt-minion</p>
-</blockquote>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum -y <span class="keyword">install</span> <span class="keyword">salt</span>-ssh</span><br><span class="line"></span><br><span class="line"># shell script <span class="keyword">path</span></span><br><span class="line">mkdir /srv/<span class="keyword">salt</span>/shell -p</span><br></pre></td></tr></table></figure>
-<h4 id="2-1-salt-ssh-config"><a href="#2-1-salt-ssh-config" class="headerlink" title="2.1 salt-ssh config"></a>2.1 salt-ssh config</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim /etc/slat/roster</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Sample salt-ssh config file</span></span><br><span class="line"><span class="meta">#</span><span class="bash">web1:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  host: 192.168.42.1 <span class="comment"># The IP addr or DNS hostname</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">  user: fred         <span class="comment"># Remote executions will be executed as user fred</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">  passwd: foobarbaz  <span class="comment"># The password to use for login, if omitted, keys are used</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">  sudo: True         <span class="comment"># Whether to sudo to root, not enabled by default</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">web2:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  host: 192.168.42.2</span></span><br><span class="line">hk:</span><br><span class="line">   host: ****</span><br><span class="line">   user: root</span><br><span class="line">   port: 22</span><br><span class="line">   priv: ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
-<h4 id="2-2-salt-ssh-test"><a href="#2-2-salt-ssh-test" class="headerlink" title="2.2 salt-ssh  test"></a>2.2 salt-ssh  test</h4><figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="symbol">@jd</span><span class="number">-3</span> ~]<span class="meta"># salt-ssh <span class="string">"*"</span> test.ping </span></span><br><span class="line">hk:</span><br><span class="line">    <span class="literal">True</span></span><br></pre></td></tr></table></figure>
-<h4 id="2-3-install-salt-minion-with-salt-ssh"><a href="#2-3-install-salt-minion-with-salt-ssh" class="headerlink" title="2.3 install salt-minion with salt-ssh"></a>2.3 install salt-minion with salt-ssh</h4><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">cd /srv/salt</span><br><span class="line">mkdir minions/files -p</span><br><span class="line"></span><br><span class="line">cat &gt;install.sls&lt;&lt;EOF</span><br><span class="line">minion_key:</span><br><span class="line">  file.managed:</span><br><span class="line">    -<span class="ruby"> <span class="symbol">name:</span> /tmp/SALTSTACK-GPG-KEY.pub</span></span><br><span class="line"><span class="ruby">    - <span class="symbol">source:</span> <span class="symbol">salt:</span>/<span class="regexp">/minions/files</span><span class="regexp">/SALTSTACK-GPG-KEY.pub</span></span></span><br><span class="line"><span class="ruby">    - <span class="symbol">user:</span> root</span></span><br><span class="line"><span class="ruby">    - <span class="symbol">group:</span> root</span></span><br><span class="line"><span class="ruby">    - <span class="symbol">mode:</span> <span class="number">644</span></span></span><br><span class="line"><span class="ruby">  cmd.<span class="symbol">run:</span></span></span><br><span class="line"><span class="ruby">    - <span class="symbol">name:</span> rpm --import /tmp/SALTSTACK-GPG-KEY.pub</span></span><br><span class="line"><span class="ruby"><span class="symbol">minion_yum:</span></span></span><br><span class="line"><span class="ruby">  file.<span class="symbol">managed:</span></span></span><br><span class="line"><span class="ruby">    - <span class="symbol">name:</span> /etc/yum.repos.d/salt-latest.repo</span></span><br><span class="line"><span class="ruby">    - <span class="symbol">source:</span> <span class="symbol">salt:</span>/<span class="regexp">/minions/files</span><span class="regexp">/salt-latest.repo</span></span></span><br><span class="line"><span class="ruby">    - <span class="symbol">user:</span> root</span></span><br><span class="line"><span class="ruby">    - <span class="symbol">group:</span> root</span></span><br><span class="line"><span class="ruby">    - <span class="symbol">mode:</span> <span class="number">644</span></span></span><br><span class="line"><span class="ruby">  cmd.<span class="symbol">run:</span></span></span><br><span class="line"><span class="ruby">    - <span class="symbol">name:</span> yum clean expire-cache &amp;&amp; yum -y update</span></span><br><span class="line"><span class="ruby"><span class="symbol">minion_install:</span></span></span><br><span class="line"><span class="ruby">  pkg.<span class="symbol">installed:</span></span></span><br><span class="line"><span class="ruby"><span class="comment">#    - skip_verify: True</span></span></span><br><span class="line"><span class="ruby">    - <span class="symbol">pkgs:</span></span></span><br><span class="line"><span class="ruby">      - salt-minion</span></span><br><span class="line"><span class="ruby">    - <span class="symbol">require:</span></span></span><br><span class="line"><span class="ruby">      - <span class="symbol">file:</span> minion_yum</span></span><br><span class="line"><span class="ruby">    - <span class="symbol">unless:</span> rpm -qa <span class="params">| grep salt-minion</span></span></span><br><span class="line"><span class="ruby"><span class="symbol">minion_conf:</span></span></span><br><span class="line"><span class="ruby">  file.<span class="symbol">managed:</span></span></span><br><span class="line"><span class="ruby">    - <span class="symbol">name:</span> /etc/salt/minion</span></span><br><span class="line"><span class="ruby">    - <span class="symbol">source:</span> <span class="symbol">salt:</span>/<span class="regexp">/minions/files</span><span class="regexp">/minion</span></span></span><br><span class="line"><span class="ruby">    - <span class="symbol">template:</span> jinja</span></span><br><span class="line"><span class="ruby">    - <span class="symbol">defaults:</span></span></span><br><span class="line"><span class="ruby">      <span class="symbol">minion_id:</span> &#123;&#123;grains[<span class="string">'nodename'</span>]&#125;&#125;</span></span><br><span class="line"><span class="ruby">    - <span class="symbol">require:</span></span></span><br><span class="line"><span class="ruby">      - <span class="symbol">pkg:</span> minion_install</span></span><br><span class="line"><span class="ruby"><span class="symbol">salt_service:</span></span></span><br><span class="line"><span class="ruby">  service.<span class="symbol">running:</span></span></span><br><span class="line"><span class="ruby">    - <span class="symbol">name:</span> salt-minion</span></span><br><span class="line"><span class="ruby">    - <span class="symbol">enable:</span> True</span></span><br><span class="line"><span class="ruby">    - <span class="symbol">require:</span></span></span><br><span class="line"><span class="ruby">      - <span class="symbol">file:</span> minion_conf</span></span><br><span class="line"><span class="ruby">EOF</span></span><br><span class="line"><span class="ruby"></span></span><br><span class="line"><span class="ruby">cd minions/files</span></span><br><span class="line"><span class="ruby"></span></span><br><span class="line"><span class="ruby">cat &gt;minion<span class="string">&lt;&lt;EOF</span></span></span><br><span class="line"><span class="ruby"><span class="symbol">master:</span> <span class="number">117.122</span>.<span class="number">238.215</span></span></span><br><span class="line"><span class="ruby"><span class="symbol">id:</span> &#123;&#123; minion_id &#125;&#125;</span></span><br><span class="line"><span class="ruby">EOF</span></span><br><span class="line"><span class="ruby"></span></span><br><span class="line"><span class="ruby">cat &gt;salt-stack.repo<span class="string">&lt;&lt;EOF</span></span></span><br><span class="line"><span class="ruby">[salt-latest]</span></span><br><span class="line"><span class="ruby">name=SaltStack Latest Release Channel <span class="keyword">for</span> RHEL/Centos $releasever</span></span><br><span class="line"><span class="ruby">baseurl=<span class="symbol">https:</span>/<span class="regexp">/repo.saltstack.com/yum</span><span class="regexp">/redhat/</span><span class="number">7</span>/$basearch/latest</span></span><br><span class="line"><span class="ruby">failovermethod=priority</span></span><br><span class="line"><span class="ruby">enabled=<span class="number">1</span></span></span><br><span class="line"><span class="ruby">gpgcheck=<span class="number">1</span></span></span><br><span class="line"><span class="ruby">gpgkey=<span class="symbol">file:</span>/<span class="regexp">//etc</span><span class="regexp">/pki/rpm</span>-gpg/saltstack-signing-key</span></span><br><span class="line"><span class="ruby">EOF</span></span><br><span class="line"><span class="ruby"></span></span><br><span class="line"><span class="ruby">cat &gt;SALTSTACK-GPG-KEY.pub<span class="string">&lt;&lt;EOF</span></span></span><br><span class="line"><span class="ruby">-----<span class="keyword">BEGIN</span> PGP PUBLIC KEY BLOCK-----</span></span><br><span class="line"><span class="ruby"><span class="symbol">Version:</span> GnuPG v2</span></span><br><span class="line"><span class="ruby"></span></span><br><span class="line"><span class="ruby">mQENBFOpvpgBCADkP656H41i8fpplEEB8IeLhugyC2rTEwwSclb8tQNYtUiGdna9</span></span><br><span class="line"><span class="ruby">m38kb0OS2DDrEdtdQb2hWCnswxaAkUunb2qq18vd3dBvlnI+C4/xu5ksZZkRj+fW</span></span><br><span class="line"><span class="ruby">tArNR18V+<span class="number">2</span>jkwcG26m8AxIrT+m4M6/bgnSfHTBtT5adNfVcTHqiT1JtCbQcXmwVw</span></span><br><span class="line"><span class="ruby">WbqS6v/LhcsBE/<span class="regexp">/SHne4uBCK/</span>GHxZHhQ5jz5h+<span class="number">3</span>vWeV4gvxS3Xu6v1IlIpLDwUts</span></span><br><span class="line"><span class="ruby">kT1DumfynYnnZmWTGc6SYyIFXTPJLtnoWDb9OBdWgZxXfHEcBsKGha+bXO+m2tHA</span></span><br><span class="line"><span class="ruby">gNneN9i5f8oNxo5njrL8jkCckOpNpng18BKXABEBAAG0MlNhbHRTdGFjayBQYWNr</span></span><br><span class="line"><span class="ruby">YWdpbmcgVGVhbSA8cGFja2FnaW5nQHNhbHRzdGFjay5jb2<span class="number">0</span>+iQE4BBMBAgAiBQJT</span></span><br><span class="line"><span class="ruby">qb6YAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRAOCKFJ3le/vhkqB/0Q</span></span><br><span class="line"><span class="ruby">WzELZf4d87WApzolLG+zpsJKtt/ueXL1W1KA7JILhXB1uyvVORt8uA9FjmE083o1</span></span><br><span class="line"><span class="ruby">yE66wCya7V8hjNn2lkLXboOUd1UTErlRg1GYbIt++VPscTxHxwpjDGxDB1/fiX2o</span></span><br><span class="line"><span class="ruby">nK5SEpuj4IeIPJVE/uLNAwZyfX8DArLVJ5h8lknwiHlQLGlnOu9ulEAejwAKt9CU</span></span><br><span class="line"><span class="ruby"><span class="number">4</span>oYTszYM4xrbtjB/fR+mPnYh2fBoQO4d/NQiejIEyd9IEEMd/<span class="number">03</span>AJQBuMux62tjA</span></span><br><span class="line"><span class="ruby">/NwvQ9eqNgLw9NisFNHRWtP4jhAOsshv1WW+zPzu3ozoO+lLHixUIz7fqRk38q8Q</span></span><br><span class="line"><span class="ruby"><span class="number">9</span>oNR31KvrkSNrFbA3D89uQENBFOpvpgBCADJ79iH10AfAfpTBEQwa6vzUI3Eltqb</span></span><br><span class="line"><span class="ruby"><span class="number">9</span>aZ0xbZV8V/<span class="number">8</span>pnuU7rqM7Z+nJgldibFk4gFG2bHCG1C5aEH/FmcOMvTKDhJSFQUx</span></span><br><span class="line"><span class="ruby">uhgxttMArXm2c22OSy1hpsnVG68G32Nag/QFEJ++<span class="number">3</span>hNnbyGZpHnPiYgej3FrerQJ</span></span><br><span class="line"><span class="ruby">zv456wIsxRDMvJ1NZQB3twoCqwapC6FJE2hukSdWB5yCYpWlZJXBKzlYz/gwD/Fr</span></span><br><span class="line"><span class="ruby">GL578WrLhKw3UvnJmlpqQaDKwmV2s7MsoZogC6wkHE92kGPG2GmoRD3ALjmCvN1E</span></span><br><span class="line"><span class="ruby">PsIsQGnwpcXsRpYVCoW7e2nW4wUf7IkFZ94yOCmUq6WreWI4NggRcFC5ABEBAAGJ</span></span><br><span class="line"><span class="ruby">AR8EGAECAAkFAlOpvpgCGwwACgkQDgihSd5Xv74/NggA08kEdBkiWWwJZUZEy7cK</span></span><br><span class="line"><span class="ruby">WWcgjnRuOHd4rPeT+vQbOWGu6x4bxuVf9aTiYkf7ZjVF2lPn97EXOEGFWPZeZbH4</span></span><br><span class="line"><span class="ruby">vdRFH9jMtP+rrLt6+<span class="number">3</span>c9j0M8SIJYwBL1+CNpEC/BuHj/Ra/cmnG5ZNhYebm76h5f</span></span><br><span class="line"><span class="ruby">T9iPW9fFww36FzFka4VPlvA4oB7ebBtquFg3sdQNU/MmTVV4jPFWXxh4oRDDR+<span class="number">8</span>N</span></span><br><span class="line"><span class="ruby"><span class="number">1</span>bcPnbB11b5ary99F/mqr7RgQ+YFF0uKRE3SKa7a+<span class="number">6</span>cIuHEZ7Za+zhPaQlzAOZlx</span></span><br><span class="line"><span class="ruby">fuBmScum8uQTrEF5+Um5zkwC7EXTdH1co/+<span class="regexp">/V/fp</span>OtxIg4XO4kcugZefVm5ERfVS</span></span><br><span class="line"><span class="ruby">MA==</span></span><br><span class="line"><span class="ruby">=dtMN</span></span><br><span class="line"><span class="ruby">-----<span class="keyword">END</span> PGP PUBLIC KEY BLOCK-----</span></span><br><span class="line"><span class="ruby">EOF</span></span><br><span class="line"><span class="ruby"></span></span><br><span class="line"><span class="ruby">salt-ssh <span class="string">"hk"</span> state.sls install</span></span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -720,10 +442,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -731,6 +454,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -751,8 +478,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -822,6 +558,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-group-amp-amp-distinct问题发现"><span class="nav-text">1 group &amp;&amp; distinct问题发现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-group-by"><span class="nav-text">1.1 group by</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-进一步测试distinct"><span class="nav-text">1.2 进一步测试distinct</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-更多版本测试及问题解决"><span class="nav-text">2 更多版本测试及问题解决</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-经验教训"><span class="nav-text">3 经验教训</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -955,6 +707,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
