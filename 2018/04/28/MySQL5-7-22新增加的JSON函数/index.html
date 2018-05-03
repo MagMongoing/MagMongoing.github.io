@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="MySQL JSON function," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="MySQL8.0增加了一些新的JSON函数，由于8.0刚刚GA，大部分用户并不会立刻进行升级，其中的一些函数在5.7.22版本中已经可用。 JSON merge函数的改动MySQL5.7的JSON_MERGE函数，其作用是将2个json文档合并为一个。而合并后的文档包含合并前两文档的所有成员。对于合并前两个文档的公共成员，合并后的文档将以包含两原始值的数组展示:123456789101112131">
+<meta name="keywords" content="MySQL JSON function">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL5.7.22新增加的JSON函数">
+<meta property="og:url" content="http://yoursite.com/2018/04/28/MySQL5-7-22新增加的JSON函数/index.html">
+<meta property="og:site_name" content="Mag&#39;s Note">
+<meta property="og:description" content="MySQL8.0增加了一些新的JSON函数，由于8.0刚刚GA，大部分用户并不会立刻进行升级，其中的一些函数在5.7.22版本中已经可用。 JSON merge函数的改动MySQL5.7的JSON_MERGE函数，其作用是将2个json文档合并为一个。而合并后的文档包含合并前两文档的所有成员。对于合并前两个文档的公共成员，合并后的文档将以包含两原始值的数组展示:123456789101112131">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-05-03T08:24:59.605Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL5.7.22新增加的JSON函数">
+<meta name="twitter:description" content="MySQL8.0增加了一些新的JSON函数，由于8.0刚刚GA，大部分用户并不会立刻进行升级，其中的一些函数在5.7.22版本中已经可用。 JSON merge函数的改动MySQL5.7的JSON_MERGE函数，其作用是将2个json文档合并为一个。而合并后的文档包含合并前两文档的所有成员。对于合并前两个文档的公共成员，合并后的文档将以包含两原始值的数组展示:123456789101112131">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/28/MySQL5-7-22新增加的JSON函数/"/>
+
+
+
+
+
+  <title>MySQL5.7.22新增加的JSON函数 | Mag's Note</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mag's Note</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/28/MySQL5-7-22新增加的JSON函数/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mag Bing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mag's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MySQL5.7.22新增加的JSON函数</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-28T15:59:02+08:00">
+                2018-04-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>MySQL8.0增加了一些新的JSON函数，由于8.0刚刚GA，大部分用户并不会立刻进行升级，其中的一些函数在5.7.22版本中已经可用。</p>
+<h3 id="JSON-merge函数的改动"><a href="#JSON-merge函数的改动" class="headerlink" title="JSON merge函数的改动"></a>JSON merge函数的改动</h3><p>MySQL5.7的JSON_MERGE函数，其作用是将2个json文档合并为一个。而合并后的文档包含合并前两文档的所有成员。对于合并前两个文档的公共成员，合并后的文档将以包含两原始值的数组展示:<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select @j1;</span><br><span class="line">+<span class="comment">---------------+</span></span><br><span class="line">| @j1           |</span><br><span class="line">+<span class="comment">---------------+</span></span><br><span class="line">| &#123;"a":1,"b":2&#125; |</span><br><span class="line">+<span class="comment">---------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> @j2;</span><br><span class="line">+<span class="comment">---------------+</span></span><br><span class="line">| @j2           |</span><br><span class="line">+<span class="comment">---------------+</span></span><br><span class="line">| &#123;"b":3,"c":4&#125; |</span><br><span class="line">+<span class="comment">---------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> json_merge(@j1,@j2);</span><br><span class="line">+<span class="comment">-------------------------------+</span></span><br><span class="line">| json_merge(@j1,@j2)           |</span><br><span class="line">+<span class="comment">-------------------------------+</span></span><br><span class="line">| &#123;"a": 1, "b": [2, 3], "c": 4&#125; |</span><br><span class="line">+<span class="comment">-------------------------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.07</span> sec)</span><br></pre></td></tr></table></figure></p>
+<p>5.7.22如果使用JSON_MERGE函数，将会有wanring提示，建议使用其变种代替：</p>
+<ul>
+<li>JSON_MERGE_PRESERVE：它和JSON_MERGE没有区别，后缀表示保存来自两个文档公共成员的所有值</li>
+<li>JSON_MERGE_PATCH：该函数使用<a href="https://tools.ietf.org/html/rfc7396" target="_blank" rel="noopener">RFC7396</a>指定的JSON MERGE PATCH算法来合并文档，即公共成员用第二个文档的属性值进行覆盖</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- mysql-8.0.11</span></span><br><span class="line"></span><br><span class="line">mysql&gt; select * from uk;</span><br><span class="line">+<span class="comment">----+------------------+---------------------+</span></span><br><span class="line">| id | c1               | c2                  |</span><br><span class="line">+<span class="comment">----+------------------+---------------------+</span></span><br><span class="line">|  1 | &#123;"a": 1, "b": 2&#125; | &#123;"b": 3, "c": 4&#125;    |</span><br><span class="line">|  2 | &#123;"a": 1, "b": 2&#125; | &#123;"a": 4, "b": null&#125; |</span><br><span class="line">+<span class="comment">----+------------------+---------------------+</span></span><br><span class="line"></span><br><span class="line">mysql&gt; select json_merge(c1,c2) from uk;</span><br><span class="line">+<span class="comment">-------------------------------+</span></span><br><span class="line">| json_merge(c1,c2)             |</span><br><span class="line">+<span class="comment">-------------------------------+</span></span><br><span class="line">| &#123;"a": 1, "b": [2, 3], "c": 4&#125; |</span><br><span class="line">| &#123;"a": [1, 4], "b": [2, null]&#125; |</span><br><span class="line">+<span class="comment">-------------------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span>, <span class="number">1</span> <span class="keyword">warning</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">show</span> <span class="keyword">warnings</span>;</span><br><span class="line">+<span class="comment">---------+------+-----------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">| Level   | Code | Message                                                                                                                     |</span><br><span class="line">+<span class="comment">---------+------+-----------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">| Warning | 1287 | 'JSON_MERGE' is deprecated and will be removed in a future release. Please <span class="keyword">use</span> JSON_MERGE_PRESERVE/JSON_MERGE_PATCH instead |</span><br><span class="line">+<span class="comment">---------+------+-----------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line"><span class="number">1</span> <span class="keyword">row</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- json_merge_preserve</span></span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> json_merge_preserve(c1,c2) <span class="keyword">from</span> uk;</span><br><span class="line">+<span class="comment">-------------------------------+</span></span><br><span class="line">| json_merge_preserve(c1,c2)    |</span><br><span class="line">+<span class="comment">-------------------------------+</span></span><br><span class="line">| &#123;"a": 1, "b": [2, 3], "c": 4&#125; |</span><br><span class="line">| &#123;"a": [1, 4], "b": [2, null]&#125; |</span><br><span class="line">+<span class="comment">-------------------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> json_merge_patch(c1,c2) <span class="keyword">from</span> uk;</span><br><span class="line">+<span class="comment">--------------------------+</span></span><br><span class="line">| json_merge_patch(c1,c2)  |</span><br><span class="line">+<span class="comment">--------------------------+</span></span><br><span class="line">| &#123;"a": 1, "b": 3, "c": 4&#125; |</span><br><span class="line">| &#123;"a": 4&#125;                 |</span><br><span class="line">+<span class="comment">--------------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+<h3 id="新增JSON聚合函数"><a href="#新增JSON聚合函数" class="headerlink" title="新增JSON聚合函数"></a>新增JSON聚合函数</h3><ul>
+<li>JSON_ARRAYAGG：聚合为JSON array</li>
+<li>JSON_OBJECTAGG: 将值聚合为JSON object</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select emp_no,hire_date, json_arrayAGG(first_name) from employees group by hire_date limit 2;</span><br><span class="line">+<span class="comment">--------+------------+--------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">| emp_no | hire_date  | json_arrayAGG(first_name)                                                                              |</span><br><span class="line">+<span class="comment">--------+------------+--------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">| 110022 | 1985-01-01 | ["Margareta", "Ebru", "Shirish", "Krassimir", "DeForest", "Peternela", "Przemyslawa", "Arie", "Tonny"] |</span><br><span class="line">| 110114 | 1985-01-14 | ["Isamu"]                                                                                              |</span><br><span class="line">+<span class="comment">--------+------------+--------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.33</span> sec)</span><br><span class="line">mysql&gt; <span class="keyword">select</span> emp_no,hire_date, json_objectagg(first_name,gender) <span class="keyword">from</span> employees <span class="keyword">group</span> <span class="keyword">by</span> hire_date <span class="keyword">limit</span> <span class="number">2</span>;</span><br><span class="line">+<span class="comment">--------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">| emp_no | hire_date  | json_objectagg(first_name,gender)                                                                                                                   |</span><br><span class="line">+<span class="comment">--------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">| 110022 | 1985-01-01 | &#123;"Arie": "M", "Ebru": "M", "Tonny": "F", "Shirish": "F", "DeForest": "M", "Krassimir": "F", "Margareta": "M", "Peternela": "F", "Przemyslawa": "M"&#125; |</span><br><span class="line">| 110114 | 1985-01-14 | &#123;"Isamu": "F"&#125;                                                                                                                                      |</span><br><span class="line">+<span class="comment">--------+------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.19</span> sec)</span><br></pre></td></tr></table></figure>
+<p>JSON聚合函数的更多使用方法可以参考<a href="https://mysqlserverteam.com/mysql-8-0-labs-json-aggregation-functions/" target="_blank" rel="noopener">Catalin’s blog post</a></p>
+<h3 id="Pretty-printing-of-JSON-values"><a href="#Pretty-printing-of-JSON-values" class="headerlink" title="Pretty-printing of JSON values"></a>Pretty-printing of JSON values</h3><p>5.7.22引入JSON_PRETTY函数，使得JSON更加易读<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select json_pretty(json_objectagg(first_name,gender)) as a from employees group by hire_date limit 2;</span><br><span class="line">+<span class="comment">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">| a                                                                                                                                                                       |</span><br><span class="line">+<span class="comment">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">| &#123;</span><br><span class="line">  "Arie": "M",</span><br><span class="line">  "Ebru": "M",</span><br><span class="line">  "Tonny": "F",</span><br><span class="line">  "Shirish": "F",</span><br><span class="line">  "DeForest": "M",</span><br><span class="line">  "Krassimir": "F",</span><br><span class="line">  "Margareta": "M",</span><br><span class="line">  "Peternela": "F",</span><br><span class="line">  "Przemyslawa": "M"</span><br><span class="line">&#125; |</span><br><span class="line">| &#123;</span><br><span class="line">  "Isamu": "F"</span><br><span class="line">&#125;                                                                                                                                                      |</span><br><span class="line">+<span class="comment">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.18</span> sec)</span><br></pre></td></tr></table></figure></p>
+<h3 id="Inspection-of-JSON-storage-size"><a href="#Inspection-of-JSON-storage-size" class="headerlink" title="Inspection of JSON storage size"></a>Inspection of JSON storage size</h3><p>MySQL使用二进制格式来存储JSON列，JSON_STORAGE_SIZE函数可以查看json值占用多少空间<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select doc,json_storage_size(doc) from countryinfo limit 2;</span><br><span class="line">+<span class="comment">------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------+</span></span><br><span class="line">| doc                                                                                                                                                                                                                                                                                                                                            | json_storage_size(doc) |</span><br><span class="line">+<span class="comment">------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------+</span></span><br><span class="line">| &#123;"GNP": 828, "_id": "ABW", "Name": "Aruba", "IndepYear": null, "geography": &#123;"Region": "Caribbean", "Continent": "North America", "SurfaceArea": 193&#125;, "government": &#123;"HeadOfState": "Beatrix", "GovernmentForm": "Nonmetropolitan Territory of The Netherlands"&#125;, "demographics": &#123;"Population": 103000, "LifeExpectancy": 78.4000015258789&#125;&#125; |                    339 |</span><br><span class="line">| &#123;"GNP": 5976, "_id": "AFG", "Name": "Afghanistan", "IndepYear": 1919, "geography": &#123;"Region": "Southern and Central Asia", "Continent": "Asia", "SurfaceArea": 652090&#125;, "government": &#123;"HeadOfState": "Mohammad Omar", "GovernmentForm": "Islamic Emirate"&#125;, "demographics": &#123;"Population": 22720000, "LifeExpectancy": 45.900001525878906&#125;&#125;   |                    333 |</span><br><span class="line">+<span class="comment">------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure></p>
+<h3 id="参考译文"><a href="#参考译文" class="headerlink" title="参考译文"></a>参考译文</h3><p><a href="https://mysqlserverteam.com/new-json-functions-in-mysql-5-7-22/" target="_blank" rel="noopener">New JSON functions in MySQL 5.7.22</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL-JSON-function/" rel="tag"># MySQL JSON function</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/09/MySQL压测工具sysbench1-0的使用/" rel="next" title="MySQL压测工具sysbench1.0的使用">
+                <i class="fa fa-chevron-left"></i> MySQL压测工具sysbench1.0的使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Mag Bing</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:magbon6@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-merge函数的改动"><span class="nav-text">JSON merge函数的改动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新增JSON聚合函数"><span class="nav-text">新增JSON聚合函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pretty-printing-of-JSON-values"><span class="nav-text">Pretty-printing of JSON values</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Inspection-of-JSON-storage-size"><span class="nav-text">Inspection of JSON storage size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考译文"><span class="nav-text">参考译文</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mag Bing</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
