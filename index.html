@@ -269,6 +269,283 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/04/MySQL-TIMESTAMP和DATETIME列的自动初始化及更新/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mag Bing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mag's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/04/MySQL-TIMESTAMP和DATETIME列的自动初始化及更新/" itemprop="url">MySQL TIMESTAMP和DATETIME列的自动初始化及更新</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-04T11:16:46+08:00">
+                2018-11-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="TIMESTAMP和DATETIME列自动填充及更新"><a href="#TIMESTAMP和DATETIME列自动填充及更新" class="headerlink" title="TIMESTAMP和DATETIME列自动填充及更新"></a>TIMESTAMP和DATETIME列自动填充及更新</h3><p>TIMESTAMP和DATETIME列可以用当前的日期和时间进行自动填充或更新。表中的timestamp或datetime列，可以使用当前时间作为默认值或自动更新的值:</p>
+<ul>
+<li>数据写入时，不用给自动填充列写入值，其会使用当前时间作为值写入</li>
+<li>当行中其他列的值更新时，随更新而更新的时间列，会自动更新到当前时间。当其它列的值没有发生变化时（即使直行更新语句，但值没变），随更新而更新的时间列不进行更新。如果其它列更新，不希望随更新而更新时间列变化，可以明确将其更新为原来的值。随更新而更新的同样可以直接更新其值。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from t2;</span><br><span class="line">+---------------------+------+</span><br><span class="line">| ts1                 | id   |</span><br><span class="line">+---------------------+------+</span><br><span class="line">| 2018-11-04 15:54:59 |    1 |</span><br><span class="line">| 2018-11-04 15:54:39 |    1 |</span><br><span class="line">+---------------------+------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; update t2 set id=1;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line">Rows matched: 2  Changed: 0  Warnings: 0</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from t2;</span><br><span class="line">+---------------------+------+</span><br><span class="line">| ts1                 | id   |</span><br><span class="line">+---------------------+------+</span><br><span class="line">| 2018-11-04 15:54:59 |    1 |</span><br><span class="line">| 2018-11-04 15:54:39 |    1 |</span><br><span class="line">+---------------------+------+</span><br><span class="line">2 rows in set (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; update t2 set id = 2, ts1=ts1;    ## 时间列保持不变</span><br><span class="line">Query OK, 2 rows affected (0.00 sec)</span><br><span class="line">Rows matched: 2  Changed: 2  Warnings: 0</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from t2;</span><br><span class="line">+---------------------+------+</span><br><span class="line">| ts1                 | id   |</span><br><span class="line">+---------------------+------+</span><br><span class="line">| 2018-11-04 15:54:59 |    2 |</span><br><span class="line">| 2018-11-04 15:54:39 |    2 |</span><br><span class="line">+---------------------+------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>当前时间戳:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> MySQL  localhost+ ssl  dba  SQL &gt; select current_timestamp(), now(), localtime, localtime(), localtimestamp, localtimestamp();</span><br><span class="line">+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+</span><br><span class="line">| current_timestamp() | now()               | localtime           | localtime()         | localtimestamp      | localtimestamp()    |</span><br><span class="line">+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+</span><br><span class="line">| 2018-11-04 18:42:43 | 2018-11-04 18:42:43 | 2018-11-04 18:42:43 | 2018-11-04 18:42:43 | 2018-11-04 18:42:43 | 2018-11-04 18:42:43 |</span><br><span class="line">+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+</span><br></pre></td></tr></table></figure></p>
+<h3 id="explicit-defaults-for-timestamp参数"><a href="#explicit-defaults-for-timestamp参数" class="headerlink" title="explicit_defaults_for_timestamp参数"></a>explicit_defaults_for_timestamp参数</h3><p>从8.0.2起，默认开启，之前默认关闭。当前状态为deprecated。其决定着服务器是否为timestamp列中的默认值和NULL值处理启用某些非标准行为。参数启用后，则禁用这些非标准行为。</p>
+<h4 id="explicit-defaults-for-timestamp-0"><a href="#explicit-defaults-for-timestamp-0" class="headerlink" title="explicit_defaults_for_timestamp=0"></a>explicit_defaults_for_timestamp=0</h4><p>explicit_defaults_for_timestamp关闭时，timestamp列有以下一些非标准行为:</p>
+<ul>
+<li><p>TIMESTAMP 没有明确声明null属性的列被自动声明为not null。当给列null值时，列更新为当前的时间戳。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">create table t4(ts1 timestamp default &apos;2018&apos;);</span><br><span class="line"></span><br><span class="line">mysql&gt; show create table t4\G</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">       Table: t4</span><br><span class="line">Create Table: CREATE TABLE `t4` (</span><br><span class="line">  `ts1` timestamp NOT NULL DEFAULT &apos;2018-01-01 00:00:00&apos;</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; insert t4 values(null);</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from t4;</span><br><span class="line">+---------------------+</span><br><span class="line">| ts1                 |</span><br><span class="line">+---------------------+</span><br><span class="line">| 2018-11-04 17:36:55 |</span><br><span class="line">+---------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>表中的第一个TIMESTAMP列，如果没有明确声明null属性，或明确声明default, 或明确声明on update。则自动声明为 DEFAULT CURRENT_TIMESTAMP  ON UPDATE CURRENT_TIMESTAMP。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; create table t5(ts1 timestamp,ts2 timestamp);</span><br><span class="line">Query OK, 0 rows affected (0.02 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; show create table t5\G</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">       Table: t5</span><br><span class="line">Create Table: CREATE TABLE `t5` (</span><br><span class="line">  `ts1` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,</span><br><span class="line">  `ts2` timestamp NOT NULL DEFAULT &apos;0000-00-00 00:00:00&apos;</span><br><span class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; insert t5(ts2) value(null);</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from t5;</span><br><span class="line">+---------------------+---------------------+</span><br><span class="line">| ts1                 | ts2                 |</span><br><span class="line">+---------------------+---------------------+</span><br><span class="line">| 2018-11-04 17:44:11 | 2018-11-04 17:44:11 |</span><br><span class="line">+---------------------+---------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>上例中的第二个时间列，如果没有其它声明，则声明为not null default ‘0000-00-00 00:00:00’(the ‘zero’ timestamp), 插入数据时，不指定该列时，其填充’0000-00-00 00:00:00’，并且没有警告</p>
+</li>
+</ul>
+<p>默认值同样会受SQL mode的影响。在严格模式及NO_ZERO_DATE模式下，’0000-00-00 00:00:00’是无效的。</p>
+<p>这些非标准的行为，目前处于deprecated状态，在未来的版本中，会被移除。</p>
+<h4 id="explicit-defaults-for-timestamp-1"><a href="#explicit-defaults-for-timestamp-1" class="headerlink" title="explicit_defaults_for_timestamp=1"></a>explicit_defaults_for_timestamp=1</h4><p>explicit_defaults_for_timestamp=1将禁用timestamp列默认值及null值处理的非标准行为:</p>
+<ul>
+<li>使用null值无法将timestamp列更新为当前时间戳。要使timestamp列为当前时间戳，可以使用current_timestamp()或now().</li>
+<li>TIMESTAMP 没有明确声明null属性的列则默认null属性，并且允许null值。使用null给列赋值，则得到null.</li>
+<li>TIMESTAMP 明确声明not null属性的则不允许null值。如果为该列插入null值，在单行插入或严格模式启用时会导致错误，在非严格模式下多行插入时，插入’0000-00-00 00:00:00’。在任何情况下, 都不能通过给列赋值null, 来使其为当前时间戳。</li>
+<li>TIMESTAMP 明确声明not null且没有声明default的列则被认为是该列没有默认值。在插入数据时，如果没有给该列赋值，结果取决于SQL mode。严格模式，直接报错。非严格模式，该列被声明为有隐式默认值’0000-00-00 00:00:00’，并产生warnig。这与MySQL处理其它诸如DATETIME的时间类型的方式相似。</li>
+<li>TIMESTAMP列不会被自动声明DEFAULT CURRENT_TIMESTAMP or ON UPDATE CURRENT_TIMESTAMP。这些属性必须明确声明指定。</li>
+<li>第一个TIMESTAMP列和其它的TIMESTAMP列的处理方式没有不同。</li>
+</ul>
+<p>explicit_defaults_for_timestamp=0启动服务时，在error log中有:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[Warning] TIMESTAMP with implicit DEFAULT value is deprecated.</span><br><span class="line">Please use --explicit_defaults_for_timestamp server option (see</span><br><span class="line">documentation for more details).</span><br></pre></td></tr></table></figure></p>
+<p>示例:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; set explicit_defaults_for_timestamp=1;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; insert t5(ts2) value(null);</span><br><span class="line">ERROR 1048 (23000): Column &apos;ts2&apos; cannot be null</span><br><span class="line">mysql&gt; insert t5(ts2) value(null),(null),(null);</span><br><span class="line">ERROR 1048 (23000): Column &apos;ts2&apos; cannot be null</span><br><span class="line">mysql&gt; insert t5(ts2) values(null),(null),(null);</span><br><span class="line">ERROR 1048 (23000): Column &apos;ts2&apos; cannot be null</span><br><span class="line">mysql&gt; select @sql_mode;</span><br><span class="line">+-----------+</span><br><span class="line">| @sql_mode |</span><br><span class="line">+-----------+</span><br><span class="line">| NULL      |</span><br><span class="line">+-----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select @@sql_mode;</span><br><span class="line">+-------------------------------------------------------------------------------------------+</span><br><span class="line">| @@sql_mode                                                                                |</span><br><span class="line">+-------------------------------------------------------------------------------------------+</span><br><span class="line">| STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION |</span><br><span class="line">+-------------------------------------------------------------------------------------------+</span><br><span class="line">1 row in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; set @@sql_mode=NO_ENGINE_SUBSTITUTION;</span><br><span class="line">Query OK, 0 rows affected, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; insert t5(ts2) values(null),(null),(null);</span><br><span class="line">Query OK, 3 rows affected, 1 warning (0.00 sec)</span><br><span class="line">Records: 3  Duplicates: 0  Warnings: 1</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from t5;</span><br><span class="line">+---------------------+---------------------+</span><br><span class="line">| ts1                 | ts2                 |</span><br><span class="line">+---------------------+---------------------+</span><br><span class="line">| 2018-11-04 17:44:11 | 2018-11-04 17:44:11 |</span><br><span class="line">| 2018-11-04 18:16:49 | 2018-11-04 18:16:49 |</span><br><span class="line">| 2018-11-04 18:18:32 | 0000-00-00 00:00:00 |</span><br><span class="line">| 2018-11-04 18:18:32 | 0000-00-00 00:00:00 |</span><br><span class="line">| 2018-11-04 18:18:32 | 0000-00-00 00:00:00 |</span><br><span class="line">+---------------------+---------------------+</span><br><span class="line">5 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a href="https://dev.mysql.com/doc/refman/8.0/en/timestamp-initialization.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/8.0/en/timestamp-initialization.html</a></p>
+<p><a href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_explicit_defaults_for_timestamp" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_explicit_defaults_for_timestamp</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/proxy安装配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mag Bing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mag's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/08/proxy安装配置/" itemprop="url">proxysql安装配置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-08T10:51:18+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="1-安装"><a href="#1-安装" class="headerlink" title="1 安装"></a>1 安装</h1><p>下载<a href="https://github.com/sysown/proxysql/releases" target="_blank" rel="noopener">ProxySQL</a>的安装包，这里下载当下最新版本proxysql-1.4.9-1-centos7.x86_64.rpm。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum localinstall proxysql-1.4.9-1-centos7.x86_64.rpm -y</span><br></pre></td></tr></table></figure></p>
+<p>proxysql配置文件<code>/etc/proxysql.cnf</code>，只在第一次启动的时候加载初始化，后续启动数据从proxysql.db加载。默认数据目录是<code>/var/lib/proxysql</code>，在这里我们修改为<code>/data/proxysql</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><span class="line">#file proxysql.cfg</span><br><span class="line"></span><br><span class="line"># This config file is parsed using libconfig , and its grammar is described in:</span><br><span class="line"># http://www.hyperrealm.com/libconfig/libconfig_manual.html#Configuration-File-Grammar</span><br><span class="line"># Grammar is also copied at the end of this file</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">datadir=&quot;/data/proxysql&quot;</span><br><span class="line"></span><br><span class="line">admin_variables=</span><br><span class="line">&#123;</span><br><span class="line">        admin_credentials=&quot;admin:admin&quot;</span><br><span class="line">#       mysql_ifaces=&quot;127.0.0.1:6032;/tmp/proxysql_admin.sock&quot;</span><br><span class="line">        mysql_ifaces=&quot;0.0.0.0:6032&quot;</span><br><span class="line">#       refresh_interval=2000</span><br><span class="line">#       debug=true</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">mysql_variables=</span><br><span class="line">&#123;</span><br><span class="line">        threads=4</span><br><span class="line">        max_connections=2048</span><br><span class="line">        default_query_delay=0</span><br><span class="line">        default_query_timeout=36000000</span><br><span class="line">        have_compress=true</span><br><span class="line">        poll_timeout=2000</span><br><span class="line">#       interfaces=&quot;0.0.0.0:6033;/tmp/proxysql.sock&quot;</span><br><span class="line">        interfaces=&quot;0.0.0.0:6033&quot;</span><br><span class="line">        default_schema=&quot;information_schema&quot;</span><br><span class="line">        stacksize=1048576</span><br><span class="line">        server_version=&quot;5.7.21&quot;</span><br><span class="line">        connect_timeout_server=3000</span><br><span class="line"># make sure to configure monitor username and password</span><br><span class="line"># https://github.com/sysown/proxysql/wiki/Global-variables#mysql-monitor_username-mysql-monitor_password</span><br><span class="line">        monitor_username=&quot;monitor&quot;</span><br><span class="line">        monitor_password=&quot;monitor&quot;</span><br><span class="line">        monitor_history=600000</span><br><span class="line">        monitor_connect_interval=60000</span><br><span class="line">        monitor_ping_interval=10000</span><br><span class="line">        monitor_read_only_interval=1500</span><br><span class="line">        monitor_read_only_timeout=500</span><br><span class="line">        ping_interval_server_msec=120000</span><br><span class="line">        ping_timeout_server=500</span><br><span class="line">        commands_stats=true</span><br><span class="line">        sessions_sort=true</span><br><span class="line">        connect_retries_on_failure=10</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># defines all the MySQL servers</span><br><span class="line">mysql_servers =</span><br><span class="line">(</span><br><span class="line">        &#123;</span><br><span class="line">                address = &quot;127.0.0.1&quot; # no default, required . If port is 0 , address is interpred as a Unix Socket Domain</span><br><span class="line">                port = 3341           # no default, required . If port is 0 , address is interpred as a Unix Socket Domain</span><br><span class="line">                hostgroup = 0           # no default, required</span><br><span class="line">                status = &quot;ONLINE&quot;     # default: ONLINE</span><br><span class="line">                weight = 1            # default: 1</span><br><span class="line">                compression = 0       # default: 0</span><br><span class="line">#   max_replication_lag = 10  # default 0 . If greater than 0 and replication lag passes such threshold, the server is shunned</span><br><span class="line">        &#125;</span><br><span class="line">#       &#123;</span><br><span class="line">#               address = &quot;/var/lib/mysql/mysql.sock&quot;</span><br><span class="line">#               port = 0</span><br><span class="line">#               hostgroup = 0</span><br><span class="line">#       &#125;,</span><br><span class="line">#       &#123;</span><br><span class="line">#               address=&quot;127.0.0.1&quot;</span><br><span class="line">#               port=21891</span><br><span class="line">#               hostgroup=0</span><br><span class="line">#               max_connections=200</span><br><span class="line">#       &#125;,</span><br><span class="line">#       &#123; address=&quot;127.0.0.2&quot; , port=3306 , hostgroup=0, max_connections=5 &#125;,</span><br><span class="line">#       &#123; address=&quot;127.0.0.1&quot; , port=21892 , hostgroup=1 &#125;,</span><br><span class="line">#       &#123; address=&quot;127.0.0.1&quot; , port=21893 , hostgroup=1 &#125;</span><br><span class="line">#       &#123; address=&quot;127.0.0.2&quot; , port=3306 , hostgroup=1 &#125;,</span><br><span class="line">#       &#123; address=&quot;127.0.0.3&quot; , port=3306 , hostgroup=1 &#125;,</span><br><span class="line">#       &#123; address=&quot;127.0.0.4&quot; , port=3306 , hostgroup=1 &#125;,</span><br><span class="line">#       &#123; address=&quot;/var/lib/mysql/mysql.sock&quot; , port=0 , hostgroup=1 &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">#    arg5=&quot;/var/lib/proxysql/proxysql_galera_checker.log&quot;</span><br><span class="line">#  &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mysql_replication_hostgroups=</span><br><span class="line">(</span><br><span class="line">#        &#123;</span><br><span class="line">#                writer_hostgroup=30</span><br><span class="line">#                reader_hostgroup=40</span><br><span class="line">#                comment=&quot;test repl 1&quot;</span><br><span class="line">#       &#125;,</span><br><span class="line">#       &#123;</span><br><span class="line">#                writer_hostgroup=50</span><br><span class="line">#                reader_hostgroup=60</span><br><span class="line">#                comment=&quot;test repl 2&quot;</span><br><span class="line">#        &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># http://www.hyperrealm.com/libconfig/libconfig_manual.html#Configuration-File-Grammar</span><br><span class="line">#</span><br><span class="line"># Below is the BNF grammar for configuration files. Comments and include directives are not part of the grammar, so they are not included here.</span><br><span class="line">#</span><br><span class="line"># configuration = setting-list | empty</span><br><span class="line">#</span><br><span class="line"># setting-list = setting | setting-list setting</span><br><span class="line">#</span><br><span class="line"># setting = name (&quot;:&quot; | &quot;=&quot;) value (&quot;;&quot; | &quot;,&quot; | empty)</span><br><span class="line">#</span><br><span class="line"># value = scalar-value | array | list | group</span><br><span class="line">#</span><br><span class="line"># value-list = value | value-list &quot;,&quot; value</span><br><span class="line">#</span><br><span class="line"># scalar-value = boolean | integer | integer64 | hex | hex64 | float</span><br><span class="line">#                | string</span><br><span class="line">#</span><br><span class="line"># scalar-value-list = scalar-value | scalar-value-list &quot;,&quot; scalar-value</span><br><span class="line">#</span><br><span class="line"># array = &quot;[&quot; (scalar-value-list | empty) &quot;]&quot;</span><br><span class="line">#</span><br><span class="line"># list = &quot;(&quot; (value-list | empty) &quot;)&quot;</span><br><span class="line">#</span><br><span class="line"># group = &quot;&#123;&quot; (setting-list | empty) &quot;&#125;&quot;</span><br><span class="line">#</span><br><span class="line"># empty =</span><br></pre></td></tr></table></figure></p>
+<p>修改proxysql的systemctl服务，<code>vim /etc/init.d/proxysql</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">OLDDATADIR=&quot;/data/proxysql&quot;</span><br><span class="line">DATADIR=&quot;/data/proxysql&quot;</span><br><span class="line">OPTS=&quot;-c /etc/proxysql.cnf -D $DATADIR&quot;</span><br><span class="line">PIDFILE=&quot;$DATADIR/proxysql.pid&quot;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>启动:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start proxysql</span><br></pre></td></tr></table></figure></p>
+<p><img src="./images/01.jpg" alt="proxy配置层及命令"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/28/MySQL5-7-22新增加的JSON函数/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -378,6 +655,7 @@
 <p>JSON聚合函数的更多使用方法可以参考<a href="https://mysqlserverteam.com/mysql-8-0-labs-json-aggregation-functions/" target="_blank" rel="noopener">Catalin’s blog post</a></p>
 <h3 id="Pretty-printing-of-JSON-values"><a href="#Pretty-printing-of-JSON-values" class="headerlink" title="Pretty-printing of JSON values"></a>Pretty-printing of JSON values</h3><p>5.7.22引入JSON_PRETTY函数，使得JSON更加易读<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select json_pretty(json_objectagg(first_name,gender)) as a from employees group by hire_date limit 2;</span><br><span class="line">+<span class="comment">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">| a                                                                                                                                                                       |</span><br><span class="line">+<span class="comment">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">| &#123;</span><br><span class="line">  "Arie": "M",</span><br><span class="line">  "Ebru": "M",</span><br><span class="line">  "Tonny": "F",</span><br><span class="line">  "Shirish": "F",</span><br><span class="line">  "DeForest": "M",</span><br><span class="line">  "Krassimir": "F",</span><br><span class="line">  "Margareta": "M",</span><br><span class="line">  "Peternela": "F",</span><br><span class="line">  "Przemyslawa": "M"</span><br><span class="line">&#125; |</span><br><span class="line">| &#123;</span><br><span class="line">  "Isamu": "F"</span><br><span class="line">&#125;                                                                                                                                                      |</span><br><span class="line">+<span class="comment">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.18</span> sec)</span><br></pre></td></tr></table></figure></p>
 <h3 id="Inspection-of-JSON-storage-size"><a href="#Inspection-of-JSON-storage-size" class="headerlink" title="Inspection of JSON storage size"></a>Inspection of JSON storage size</h3><p>MySQL使用二进制格式来存储JSON列，JSON_STORAGE_SIZE函数可以查看json值占用多少空间<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select doc,json_storage_size(doc) from countryinfo limit 2;</span><br><span class="line">+<span class="comment">------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------+</span></span><br><span class="line">| doc                                                                                                                                                                                                                                                                                                                                            | json_storage_size(doc) |</span><br><span class="line">+<span class="comment">------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------+</span></span><br><span class="line">| &#123;"GNP": 828, "_id": "ABW", "Name": "Aruba", "IndepYear": null, "geography": &#123;"Region": "Caribbean", "Continent": "North America", "SurfaceArea": 193&#125;, "government": &#123;"HeadOfState": "Beatrix", "GovernmentForm": "Nonmetropolitan Territory of The Netherlands"&#125;, "demographics": &#123;"Population": 103000, "LifeExpectancy": 78.4000015258789&#125;&#125; |                    339 |</span><br><span class="line">| &#123;"GNP": 5976, "_id": "AFG", "Name": "Afghanistan", "IndepYear": 1919, "geography": &#123;"Region": "Southern and Central Asia", "Continent": "Asia", "SurfaceArea": 652090&#125;, "government": &#123;"HeadOfState": "Mohammad Omar", "GovernmentForm": "Islamic Emirate"&#125;, "demographics": &#123;"Population": 22720000, "LifeExpectancy": 45.900001525878906&#125;&#125;   |                    333 |</span><br><span class="line">+<span class="comment">------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[TOC]</span><br></pre></td></tr></table></figure>
 <h3 id="参考译文"><a href="#参考译文" class="headerlink" title="参考译文"></a>参考译文</h3><p><a href="https://mysqlserverteam.com/new-json-functions-in-mysql-5-7-22/" target="_blank" rel="noopener">New JSON functions in MySQL 5.7.22</a></p>
 
           
@@ -535,8 +813,9 @@
 <li>可以通过在提供的lua脚本中预定义钩子，来创建新的基准</li>
 <li>可以作为通用的lua解释器，在脚本中用#!/usr/bin/sysbench替换#!/usr/bin/lua即可</li>
 </ul>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><h4 id="yum-安装"><a href="#yum-安装" class="headerlink" title="yum 安装"></a>yum 安装</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum install -y epel-release</span><br><span class="line">yum install -y sysbench</span><br></pre></td></tr></table></figure>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><h4 id="yum-安装"><a href="#yum-安装" class="headerlink" title="yum 安装"></a>yum 安装</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#yum install -y epel-release</span><br><span class="line">curl -s https://packagecloud.io/install/repositories/akopytov/sysbench/script.rpm.sh | sudo bash</span><br><span class="line">yum install -y sysbench</span><br></pre></td></tr></table></figure>
 <h4 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">yum -y install make automake libtool pkgconfig libaio-devel </span><br><span class="line">git clone https://github.com/akopytov/sysbench.git</span><br><span class="line">cd sysbench/</span><br><span class="line">./autogen.sh</span><br><span class="line">make -j</span><br><span class="line">./configure</span><br><span class="line">make -j</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<h3 id="sysbench-fileio"><a href="#sysbench-fileio" class="headerlink" title="sysbench fileio"></a>sysbench fileio</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">[root@db-test-5 data]# sysbench fileio --file-total-size=40G --file-test-mode=rndrw --threads=8 --time=300 --max-requests=0 prepare</span><br><span class="line">[root@db-test-5 data]# sysbench fileio --file-total-size=40G --file-test-mode=rndrw --threads=8 --time=300 --max-requests=0 run</span><br><span class="line">sysbench 1.0.15 (using bundled LuaJIT 2.1.0-beta2)</span><br><span class="line"></span><br><span class="line">Running the test with following options:</span><br><span class="line">Number of threads: 8</span><br><span class="line">Initializing random number generator from current time</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Extra file open flags: (none)</span><br><span class="line">128 files, 320MiB each</span><br><span class="line">40GiB total file size</span><br><span class="line">Block size 16KiB</span><br><span class="line">Number of IO requests: 0</span><br><span class="line">Read/Write ratio for combined random IO test: 1.50</span><br><span class="line">Periodic FSYNC enabled, calling fsync() each 100 requests.</span><br><span class="line">Calling fsync() at the end of test, Enabled.</span><br><span class="line">Using synchronous I/O mode</span><br><span class="line">Doing random r/w test</span><br><span class="line">Initializing worker threads...</span><br><span class="line"></span><br><span class="line">Threads started!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">File operations:</span><br><span class="line">    reads/s:                      168.79</span><br><span class="line">    writes/s:                     112.51</span><br><span class="line">    fsyncs/s:                     363.23</span><br><span class="line"></span><br><span class="line">Throughput:</span><br><span class="line">    read, MiB/s:                  2.64</span><br><span class="line">    written, MiB/s:               1.76</span><br><span class="line"></span><br><span class="line">General statistics:</span><br><span class="line">    total time:                          300.3886s</span><br><span class="line">    total number of events:              192587</span><br><span class="line"></span><br><span class="line">Latency (ms):</span><br><span class="line">         min:                                    0.00</span><br><span class="line">         avg:                                   12.47</span><br><span class="line">         max:                                  691.11</span><br><span class="line">         95th percentile:                       66.84</span><br><span class="line">         sum:                              2400659.84</span><br><span class="line"></span><br><span class="line">Threads fairness:</span><br><span class="line">    events (avg/stddev):           24073.3750/106.30</span><br><span class="line">    execution time (avg/stddev):   300.0825/0.00</span><br></pre></td></tr></table></figure>
 
           
         
@@ -1083,7 +1362,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1105,7 +1384,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

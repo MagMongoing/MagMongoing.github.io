@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="proxysql," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1 安装下载ProxySQL的安装包，这里下载当下最新版本proxysql-1.4.9-1-centos7.x86_64.rpm。1yum localinstall proxysql-1.4.9-1-centos7.x86_64.rpm -y proxysql配置文件/etc/proxysql.cnf，只在第一次启动的时候加载初始化，后续启动数据从proxysql.db加载。默认数据目录是/var">
+<meta name="keywords" content="proxysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="proxysql安装配置">
+<meta property="og:url" content="http://yoursite.com/2018/06/08/proxy安装配置/index.html">
+<meta property="og:site_name" content="Mag&#39;s Note">
+<meta property="og:description" content="1 安装下载ProxySQL的安装包，这里下载当下最新版本proxysql-1.4.9-1-centos7.x86_64.rpm。1yum localinstall proxysql-1.4.9-1-centos7.x86_64.rpm -y proxysql配置文件/etc/proxysql.cnf，只在第一次启动的时候加载初始化，后续启动数据从proxysql.db加载。默认数据目录是/var">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://yoursite.com/2018/06/08/proxy安装配置/images/01.jpg">
+<meta property="og:updated_time" content="2018-06-11T09:42:17.386Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="proxysql安装配置">
+<meta name="twitter:description" content="1 安装下载ProxySQL的安装包，这里下载当下最新版本proxysql-1.4.9-1-centos7.x86_64.rpm。1yum localinstall proxysql-1.4.9-1-centos7.x86_64.rpm -y proxysql配置文件/etc/proxysql.cnf，只在第一次启动的时候加载初始化，后续启动数据从proxysql.db加载。默认数据目录是/var">
+<meta name="twitter:image" content="http://yoursite.com/2018/06/08/proxy安装配置/images/01.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/08/proxy安装配置/"/>
+
+
+
+
+
+  <title>proxysql安装配置 | Mag's Note</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mag's Note</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Schedule
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/08/proxy安装配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mag Bing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mag's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">proxysql安装配置</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-08T10:51:18+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-安装"><a href="#1-安装" class="headerlink" title="1 安装"></a>1 安装</h1><p>下载<a href="https://github.com/sysown/proxysql/releases" target="_blank" rel="noopener">ProxySQL</a>的安装包，这里下载当下最新版本proxysql-1.4.9-1-centos7.x86_64.rpm。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum localinstall proxysql-1.4.9-1-centos7.x86_64.rpm -y</span><br></pre></td></tr></table></figure></p>
+<p>proxysql配置文件<code>/etc/proxysql.cnf</code>，只在第一次启动的时候加载初始化，后续启动数据从proxysql.db加载。默认数据目录是<code>/var/lib/proxysql</code>，在这里我们修改为<code>/data/proxysql</code>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><span class="line">#file proxysql.cfg</span><br><span class="line"></span><br><span class="line"># This config file is parsed using libconfig , and its grammar is described in:</span><br><span class="line"># http://www.hyperrealm.com/libconfig/libconfig_manual.html#Configuration-File-Grammar</span><br><span class="line"># Grammar is also copied at the end of this file</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">datadir=&quot;/data/proxysql&quot;</span><br><span class="line"></span><br><span class="line">admin_variables=</span><br><span class="line">&#123;</span><br><span class="line">        admin_credentials=&quot;admin:admin&quot;</span><br><span class="line">#       mysql_ifaces=&quot;127.0.0.1:6032;/tmp/proxysql_admin.sock&quot;</span><br><span class="line">        mysql_ifaces=&quot;0.0.0.0:6032&quot;</span><br><span class="line">#       refresh_interval=2000</span><br><span class="line">#       debug=true</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">mysql_variables=</span><br><span class="line">&#123;</span><br><span class="line">        threads=4</span><br><span class="line">        max_connections=2048</span><br><span class="line">        default_query_delay=0</span><br><span class="line">        default_query_timeout=36000000</span><br><span class="line">        have_compress=true</span><br><span class="line">        poll_timeout=2000</span><br><span class="line">#       interfaces=&quot;0.0.0.0:6033;/tmp/proxysql.sock&quot;</span><br><span class="line">        interfaces=&quot;0.0.0.0:6033&quot;</span><br><span class="line">        default_schema=&quot;information_schema&quot;</span><br><span class="line">        stacksize=1048576</span><br><span class="line">        server_version=&quot;5.7.21&quot;</span><br><span class="line">        connect_timeout_server=3000</span><br><span class="line"># make sure to configure monitor username and password</span><br><span class="line"># https://github.com/sysown/proxysql/wiki/Global-variables#mysql-monitor_username-mysql-monitor_password</span><br><span class="line">        monitor_username=&quot;monitor&quot;</span><br><span class="line">        monitor_password=&quot;monitor&quot;</span><br><span class="line">        monitor_history=600000</span><br><span class="line">        monitor_connect_interval=60000</span><br><span class="line">        monitor_ping_interval=10000</span><br><span class="line">        monitor_read_only_interval=1500</span><br><span class="line">        monitor_read_only_timeout=500</span><br><span class="line">        ping_interval_server_msec=120000</span><br><span class="line">        ping_timeout_server=500</span><br><span class="line">        commands_stats=true</span><br><span class="line">        sessions_sort=true</span><br><span class="line">        connect_retries_on_failure=10</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># defines all the MySQL servers</span><br><span class="line">mysql_servers =</span><br><span class="line">(</span><br><span class="line">        &#123;</span><br><span class="line">                address = &quot;127.0.0.1&quot; # no default, required . If port is 0 , address is interpred as a Unix Socket Domain</span><br><span class="line">                port = 3341           # no default, required . If port is 0 , address is interpred as a Unix Socket Domain</span><br><span class="line">                hostgroup = 0           # no default, required</span><br><span class="line">                status = &quot;ONLINE&quot;     # default: ONLINE</span><br><span class="line">                weight = 1            # default: 1</span><br><span class="line">                compression = 0       # default: 0</span><br><span class="line">#   max_replication_lag = 10  # default 0 . If greater than 0 and replication lag passes such threshold, the server is shunned</span><br><span class="line">        &#125;</span><br><span class="line">#       &#123;</span><br><span class="line">#               address = &quot;/var/lib/mysql/mysql.sock&quot;</span><br><span class="line">#               port = 0</span><br><span class="line">#               hostgroup = 0</span><br><span class="line">#       &#125;,</span><br><span class="line">#       &#123;</span><br><span class="line">#               address=&quot;127.0.0.1&quot;</span><br><span class="line">#               port=21891</span><br><span class="line">#               hostgroup=0</span><br><span class="line">#               max_connections=200</span><br><span class="line">#       &#125;,</span><br><span class="line">#       &#123; address=&quot;127.0.0.2&quot; , port=3306 , hostgroup=0, max_connections=5 &#125;,</span><br><span class="line">#       &#123; address=&quot;127.0.0.1&quot; , port=21892 , hostgroup=1 &#125;,</span><br><span class="line">#       &#123; address=&quot;127.0.0.1&quot; , port=21893 , hostgroup=1 &#125;</span><br><span class="line">#       &#123; address=&quot;127.0.0.2&quot; , port=3306 , hostgroup=1 &#125;,</span><br><span class="line">#       &#123; address=&quot;127.0.0.3&quot; , port=3306 , hostgroup=1 &#125;,</span><br><span class="line">#       &#123; address=&quot;127.0.0.4&quot; , port=3306 , hostgroup=1 &#125;,</span><br><span class="line">#       &#123; address=&quot;/var/lib/mysql/mysql.sock&quot; , port=0 , hostgroup=1 &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">#    arg5=&quot;/var/lib/proxysql/proxysql_galera_checker.log&quot;</span><br><span class="line">#  &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mysql_replication_hostgroups=</span><br><span class="line">(</span><br><span class="line">#        &#123;</span><br><span class="line">#                writer_hostgroup=30</span><br><span class="line">#                reader_hostgroup=40</span><br><span class="line">#                comment=&quot;test repl 1&quot;</span><br><span class="line">#       &#125;,</span><br><span class="line">#       &#123;</span><br><span class="line">#                writer_hostgroup=50</span><br><span class="line">#                reader_hostgroup=60</span><br><span class="line">#                comment=&quot;test repl 2&quot;</span><br><span class="line">#        &#125;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># http://www.hyperrealm.com/libconfig/libconfig_manual.html#Configuration-File-Grammar</span><br><span class="line">#</span><br><span class="line"># Below is the BNF grammar for configuration files. Comments and include directives are not part of the grammar, so they are not included here.</span><br><span class="line">#</span><br><span class="line"># configuration = setting-list | empty</span><br><span class="line">#</span><br><span class="line"># setting-list = setting | setting-list setting</span><br><span class="line">#</span><br><span class="line"># setting = name (&quot;:&quot; | &quot;=&quot;) value (&quot;;&quot; | &quot;,&quot; | empty)</span><br><span class="line">#</span><br><span class="line"># value = scalar-value | array | list | group</span><br><span class="line">#</span><br><span class="line"># value-list = value | value-list &quot;,&quot; value</span><br><span class="line">#</span><br><span class="line"># scalar-value = boolean | integer | integer64 | hex | hex64 | float</span><br><span class="line">#                | string</span><br><span class="line">#</span><br><span class="line"># scalar-value-list = scalar-value | scalar-value-list &quot;,&quot; scalar-value</span><br><span class="line">#</span><br><span class="line"># array = &quot;[&quot; (scalar-value-list | empty) &quot;]&quot;</span><br><span class="line">#</span><br><span class="line"># list = &quot;(&quot; (value-list | empty) &quot;)&quot;</span><br><span class="line">#</span><br><span class="line"># group = &quot;&#123;&quot; (setting-list | empty) &quot;&#125;&quot;</span><br><span class="line">#</span><br><span class="line"># empty =</span><br></pre></td></tr></table></figure></p>
+<p>修改proxysql的systemctl服务，<code>vim /etc/init.d/proxysql</code>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">OLDDATADIR=&quot;/data/proxysql&quot;</span><br><span class="line">DATADIR=&quot;/data/proxysql&quot;</span><br><span class="line">OPTS=&quot;-c /etc/proxysql.cnf -D $DATADIR&quot;</span><br><span class="line">PIDFILE=&quot;$DATADIR/proxysql.pid&quot;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>启动:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start proxysql</span><br></pre></td></tr></table></figure></p>
+<p><img src="./images/01.jpg" alt="proxy配置层及命令"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/proxysql/" rel="tag"># proxysql</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/28/MySQL5-7-22新增加的JSON函数/" rel="next" title="MySQL5.7.22新增加的JSON函数">
+                <i class="fa fa-chevron-left"></i> MySQL5.7.22新增加的JSON函数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/04/MySQL-TIMESTAMP和DATETIME列的自动初始化及更新/" rel="prev" title="MySQL TIMESTAMP和DATETIME列的自动初始化及更新">
+                MySQL TIMESTAMP和DATETIME列的自动初始化及更新 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Mag Bing</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:magbon6@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-安装"><span class="nav-text">1 安装</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mag Bing</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
