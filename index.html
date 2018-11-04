@@ -311,6 +311,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/mysql/" itemprop="url" rel="index">
+                    <span itemprop="name">mysql</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -346,7 +368,7 @@
 <li>当行中其他列的值更新时，随更新而更新的时间列，会自动更新到当前时间。当其它列的值没有发生变化时（即使直行更新语句，但值没变），随更新而更新的时间列不进行更新。如果其它列更新，不希望随更新而更新时间列变化，可以明确将其更新为原来的值。随更新而更新的同样可以直接更新其值。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from t2;</span><br><span class="line">+---------------------+------+</span><br><span class="line">| ts1                 | id   |</span><br><span class="line">+---------------------+------+</span><br><span class="line">| 2018-11-04 15:54:59 |    1 |</span><br><span class="line">| 2018-11-04 15:54:39 |    1 |</span><br><span class="line">+---------------------+------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; update t2 set id=1;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line">Rows matched: 2  Changed: 0  Warnings: 0</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from t2;</span><br><span class="line">+---------------------+------+</span><br><span class="line">| ts1                 | id   |</span><br><span class="line">+---------------------+------+</span><br><span class="line">| 2018-11-04 15:54:59 |    1 |</span><br><span class="line">| 2018-11-04 15:54:39 |    1 |</span><br><span class="line">+---------------------+------+</span><br><span class="line">2 rows in set (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; update t2 set id = 2, ts1=ts1;    ## 时间列保持不变</span><br><span class="line">Query OK, 2 rows affected (0.00 sec)</span><br><span class="line">Rows matched: 2  Changed: 2  Warnings: 0</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from t2;</span><br><span class="line">+---------------------+------+</span><br><span class="line">| ts1                 | id   |</span><br><span class="line">+---------------------+------+</span><br><span class="line">| 2018-11-04 15:54:59 |    2 |</span><br><span class="line">| 2018-11-04 15:54:39 |    2 |</span><br><span class="line">+---------------------+------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>当前时间戳:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> MySQL  localhost+ ssl  dba  SQL &gt; select current_timestamp(), now(), localtime, localtime(), localtimestamp, localtimestamp();</span><br><span class="line">+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+</span><br><span class="line">| current_timestamp() | now()               | localtime           | localtime()         | localtimestamp      | localtimestamp()    |</span><br><span class="line">+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+</span><br><span class="line">| 2018-11-04 18:42:43 | 2018-11-04 18:42:43 | 2018-11-04 18:42:43 | 2018-11-04 18:42:43 | 2018-11-04 18:42:43 | 2018-11-04 18:42:43 |</span><br><span class="line">+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+</span><br></pre></td></tr></table></figure></p>
+<p>当前时间戳:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">select current_timestamp(), now(), localtime, localtime(), localtimestamp, localtimestamp();</span><br><span class="line">+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+</span><br><span class="line">| current_timestamp() | now()               | localtime           | localtime()         | localtimestamp      | localtimestamp()    |</span><br><span class="line">+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+</span><br><span class="line">| 2018-11-04 18:42:43 | 2018-11-04 18:42:43 | 2018-11-04 18:42:43 | 2018-11-04 18:42:43 | 2018-11-04 18:42:43 | 2018-11-04 18:42:43 |</span><br><span class="line">+---------------------+---------------------+---------------------+---------------------+---------------------+---------------------+</span><br></pre></td></tr></table></figure></p>
 <h3 id="explicit-defaults-for-timestamp参数"><a href="#explicit-defaults-for-timestamp参数" class="headerlink" title="explicit_defaults_for_timestamp参数"></a>explicit_defaults_for_timestamp参数</h3><p>从8.0.2起，默认开启，之前默认关闭。当前状态为deprecated。其决定着服务器是否为timestamp列中的默认值和NULL值处理启用某些非标准行为。参数启用后，则禁用这些非标准行为。</p>
 <h4 id="explicit-defaults-for-timestamp-0"><a href="#explicit-defaults-for-timestamp-0" class="headerlink" title="explicit_defaults_for_timestamp=0"></a>explicit_defaults_for_timestamp=0</h4><p>explicit_defaults_for_timestamp关闭时，timestamp列有以下一些非标准行为:</p>
 <ul>
@@ -1384,7 +1406,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
