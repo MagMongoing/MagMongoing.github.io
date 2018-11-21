@@ -227,12 +227,12 @@
         </li>
       
         
-        <li class="menu-item menu-item-schedule">
-          <a href="/schedule/" rel="section">
+        <li class="menu-item menu-item-readings">
+          <a href="/readings/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
             
-            Schedule
+            Readings
           </a>
         </li>
       
@@ -255,6 +255,275 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/15/maxwell部署测试/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mag Bing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mag's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/15/maxwell部署测试/" itemprop="url">maxwell部署测试</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-15T15:40:48+08:00">
+                2018-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="Maxwell"><a href="#Maxwell" class="headerlink" title="Maxwell"></a>Maxwell</h3><h4 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/zendesk/maxwell/releases/download/v1.19.1/maxwell-1.19.1.tar.gz</span><br><span class="line"></span><br><span class="line">tar -xzf maxwell-1.19.1.tar.gz -C ../</span><br><span class="line"></span><br><span class="line">ln -s maxwell-1.19.1 maxwell</span><br></pre></td></tr></table></figure>
+<h4 id="config"><a href="#config" class="headerlink" title="config"></a>config</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd maxwell</span><br><span class="line"></span><br><span class="line">cp config.properties.example config.properties</span><br></pre></td></tr></table></figure>
+<p>config.properties填写必要信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">host=127.0.0.1</span><br><span class="line">user=</span><br><span class="line">password=</span><br><span class="line">port=</span><br><span class="line">schema_database=maxwell </span><br><span class="line">gtid_mode=true</span><br></pre></td></tr></table></figure></p>
+<h3 id="kafka准备"><a href="#kafka准备" class="headerlink" title="kafka准备"></a>kafka准备</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kafka-topics.sh  --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic maxwell</span><br><span class="line"></span><br><span class="line">kafka-topics.sh  --list  --zookeeper localhost:2181</span><br></pre></td></tr></table></figure>
+<h3 id="查看输出"><a href="#查看输出" class="headerlink" title="查看输出"></a>查看输出</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">maxwell --user=&apos;&apos; --password=&apos;&apos; --host=&apos;127.0.0.1&apos; --port=3306  --producer=stdout</span><br><span class="line"># 输出</span><br><span class="line">Using kafka version: 1.0.0</span><br><span class="line">15:35:42,837 WARN  MaxwellMetrics - Metrics will not be exposed: metricsReportingType not configured.</span><br><span class="line">15:35:43,087 INFO  SchemaStoreSchema - Creating maxwell database</span><br><span class="line">15:35:43,320 INFO  Maxwell - Maxwell v1.19.1 is booting (StdoutProducer), starting at Position[BinlogPosition[mysql-bin.000003:7586], lastHeartbeat=0]</span><br><span class="line">15:35:43,449 INFO  AbstractSchemaStore - Maxwell is capturing initial schema</span><br><span class="line">15:35:43,657 INFO  BinlogConnectorReplicator - Setting initial binlog pos to: mysql-bin.000003:7586</span><br><span class="line">15:35:43,751 INFO  BinaryLogClient - Connected to 127.0.0.1:3306 at mysql-bin.000003/7586 (sid:6379, cid:59)</span><br><span class="line">15:35:43,751 INFO  BinlogConnectorLifecycleListener - Binlog connected.</span><br></pre></td></tr></table></figure>
+<h4 id="mysql-ddl"><a href="#mysql-ddl" class="headerlink" title="mysql ddl"></a>mysql ddl</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show create table t\G</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">       Table: t</span><br><span class="line">Create Table: CREATE TABLE `t` (</span><br><span class="line">  `id` int(11) DEFAULT NULL</span><br><span class="line">  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4</span><br><span class="line"></span><br><span class="line">mysql&gt; alter table t add name varchar(20) not null default &apos;&apos;;</span><br><span class="line"></span><br><span class="line">mysql&gt; update t set name=&apos;mag&apos;;</span><br><span class="line">Query OK, 8 rows affected (0.01 sec)</span><br><span class="line">Rows matched: 8  Changed: 8  Warnings: 0</span><br><span class="line"></span><br><span class="line">mysql&gt; insert t value(1000, &apos;test&apos;);</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; delete from t where id=1000;</span><br><span class="line">Query OK, 1 row affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; alter table t add index idx_name(name);</span><br><span class="line">Query OK, 0 rows affected (0.02 sec)</span><br><span class="line">Records: 0  Duplicates: 0  Warnings: 0</span><br></pre></td></tr></table></figure>
+<p>输出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">15:50:24,323 INFO  AbstractSchemaStore - storing schema @Position[BinlogPosition[mysql-bin.000003:89989], lastHeartbeat=1542268217331] after applying &quot;alter table t add name varchar(20) not null default &apos;&apos;&quot; to dba, new schema id is 2</span><br><span class="line">&#123;&quot;database&quot;:&quot;dba&quot;,&quot;table&quot;:&quot;t&quot;,&quot;type&quot;:&quot;update&quot;,&quot;ts&quot;:1542268253,&quot;xid&quot;:950,&quot;xoffset&quot;:0,&quot;data&quot;:&#123;&quot;id&quot;:1,&quot;name&quot;:&quot;mag&quot;&#125;,&quot;old&quot;:&#123;&quot;name&quot;:&quot;&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;database&quot;:&quot;dba&quot;,&quot;table&quot;:&quot;t&quot;,&quot;type&quot;:&quot;update&quot;,&quot;ts&quot;:1542268253,&quot;xid&quot;:950,&quot;xoffset&quot;:1,&quot;data&quot;:&#123;&quot;id&quot;:2,&quot;name&quot;:&quot;mag&quot;&#125;,&quot;old&quot;:&#123;&quot;name&quot;:&quot;&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;database&quot;:&quot;dba&quot;,&quot;table&quot;:&quot;t&quot;,&quot;type&quot;:&quot;update&quot;,&quot;ts&quot;:1542268253,&quot;xid&quot;:950,&quot;xoffset&quot;:2,&quot;data&quot;:&#123;&quot;id&quot;:2,&quot;name&quot;:&quot;mag&quot;&#125;,&quot;old&quot;:&#123;&quot;name&quot;:&quot;&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;database&quot;:&quot;dba&quot;,&quot;table&quot;:&quot;t&quot;,&quot;type&quot;:&quot;update&quot;,&quot;ts&quot;:1542268253,&quot;xid&quot;:950,&quot;xoffset&quot;:3,&quot;data&quot;:&#123;&quot;id&quot;:34,&quot;name&quot;:&quot;mag&quot;&#125;,&quot;old&quot;:&#123;&quot;name&quot;:&quot;&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;database&quot;:&quot;dba&quot;,&quot;table&quot;:&quot;t&quot;,&quot;type&quot;:&quot;update&quot;,&quot;ts&quot;:1542268253,&quot;xid&quot;:950,&quot;xoffset&quot;:4,&quot;data&quot;:&#123;&quot;id&quot;:35,&quot;name&quot;:&quot;mag&quot;&#125;,&quot;old&quot;:&#123;&quot;name&quot;:&quot;&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;database&quot;:&quot;dba&quot;,&quot;table&quot;:&quot;t&quot;,&quot;type&quot;:&quot;update&quot;,&quot;ts&quot;:1542268253,&quot;xid&quot;:950,&quot;xoffset&quot;:5,&quot;data&quot;:&#123;&quot;id&quot;:100,&quot;name&quot;:&quot;mag&quot;&#125;,&quot;old&quot;:&#123;&quot;name&quot;:&quot;&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;database&quot;:&quot;dba&quot;,&quot;table&quot;:&quot;t&quot;,&quot;type&quot;:&quot;update&quot;,&quot;ts&quot;:1542268253,&quot;xid&quot;:950,&quot;xoffset&quot;:6,&quot;data&quot;:&#123;&quot;id&quot;:101,&quot;name&quot;:&quot;mag&quot;&#125;,&quot;old&quot;:&#123;&quot;name&quot;:&quot;&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;database&quot;:&quot;dba&quot;,&quot;table&quot;:&quot;t&quot;,&quot;type&quot;:&quot;update&quot;,&quot;ts&quot;:1542268253,&quot;xid&quot;:950,&quot;commit&quot;:true,&quot;data&quot;:&#123;&quot;id&quot;:200,&quot;name&quot;:&quot;mag&quot;&#125;,&quot;old&quot;:&#123;&quot;name&quot;:&quot;&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;database&quot;:&quot;dba&quot;,&quot;table&quot;:&quot;t&quot;,&quot;type&quot;:&quot;insert&quot;,&quot;ts&quot;:1542268284,&quot;xid&quot;:962,&quot;commit&quot;:true,&quot;data&quot;:&#123;&quot;id&quot;:1000,&quot;name&quot;:&quot;test&quot;&#125;&#125;</span><br><span class="line">&#123;&quot;database&quot;:&quot;dba&quot;,&quot;table&quot;:&quot;t&quot;,&quot;type&quot;:&quot;delete&quot;,&quot;ts&quot;:1542268294,&quot;xid&quot;:968,&quot;commit&quot;:true,&quot;data&quot;:&#123;&quot;id&quot;:1000,&quot;name&quot;:&quot;test&quot;&#125;&#125;</span><br><span class="line">15:52:59,775 INFO  AbstractSchemaStore - storing schema @Position[BinlogPosition[mysql-bin.000003:105597], lastHeartbeat=1542268378572] after applying &quot;alter table t add index idx_name(name)&quot; to dba, new schema id is 3</span><br></pre></td></tr></table></figure></p>
+<h4 id="用配置文件启动，数据写入kafka"><a href="#用配置文件启动，数据写入kafka" class="headerlink" title="用配置文件启动，数据写入kafka"></a>用配置文件启动，数据写入kafka</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">[root@canal maxwell]# maxwell --config config.properties --daemon</span><br><span class="line">[root@canal maxwell]# maxwell --config config.properties</span><br><span class="line">Using kafka version: 1.0.0</span><br><span class="line">15:55:34,751 WARN  MaxwellMetrics - Metrics will not be exposed: metricsReportingType not configured.</span><br><span class="line">15:55:35,070 INFO  SchemaStoreSchema - Creating dba database</span><br><span class="line">15:55:35,361 INFO  ProducerConfig - ProducerConfig values:</span><br><span class="line">	acks = 1</span><br><span class="line">	batch.size = 16384</span><br><span class="line">	bootstrap.servers = [localhost:9092]</span><br><span class="line">	buffer.memory = 33554432</span><br><span class="line">	client.id =</span><br><span class="line">	compression.type = snappy</span><br><span class="line">	connections.max.idle.ms = 540000</span><br><span class="line">	enable.idempotence = false</span><br><span class="line">	interceptor.classes = null</span><br><span class="line">	key.serializer = class org.apache.kafka.common.serialization.StringSerializer</span><br><span class="line">	linger.ms = 0</span><br><span class="line">	max.block.ms = 60000</span><br><span class="line">	max.in.flight.requests.per.connection = 5</span><br><span class="line">	max.request.size = 1048576</span><br><span class="line">	metadata.max.age.ms = 300000</span><br><span class="line">	metric.reporters = []</span><br><span class="line">	metrics.num.samples = 2</span><br><span class="line">	metrics.recording.level = INFO</span><br><span class="line">	metrics.sample.window.ms = 30000</span><br><span class="line">	partitioner.class = class org.apache.kafka.clients.producer.internals.DefaultPartitioner</span><br><span class="line">	receive.buffer.bytes = 32768</span><br><span class="line">	reconnect.backoff.max.ms = 1000</span><br><span class="line">	reconnect.backoff.ms = 50</span><br><span class="line">	request.timeout.ms = 30000</span><br><span class="line">	retries = 0</span><br><span class="line">	retry.backoff.ms = 100</span><br><span class="line">	sasl.jaas.config = null</span><br><span class="line">	sasl.kerberos.kinit.cmd = /usr/bin/kinit</span><br><span class="line">	sasl.kerberos.min.time.before.relogin = 60000</span><br><span class="line">	sasl.kerberos.service.name = null</span><br><span class="line">	sasl.kerberos.ticket.renew.jitter = 0.05</span><br><span class="line">	sasl.kerberos.ticket.renew.window.factor = 0.8</span><br><span class="line">	sasl.mechanism = GSSAPI</span><br><span class="line">	security.protocol = PLAINTEXT</span><br><span class="line">	send.buffer.bytes = 131072</span><br><span class="line">	ssl.cipher.suites = null</span><br><span class="line">	ssl.enabled.protocols = [TLSv1.2, TLSv1.1, TLSv1]</span><br><span class="line">	ssl.endpoint.identification.algorithm = null</span><br><span class="line">	ssl.key.password = null</span><br><span class="line">	ssl.keymanager.algorithm = SunX509</span><br><span class="line">	ssl.keystore.location = null</span><br><span class="line">	ssl.keystore.password = null</span><br><span class="line">	ssl.keystore.type = JKS</span><br><span class="line">	ssl.protocol = TLS</span><br><span class="line">	ssl.provider = null</span><br><span class="line">	ssl.secure.random.implementation = null</span><br><span class="line">	ssl.trustmanager.algorithm = PKIX</span><br><span class="line">	ssl.truststore.location = null</span><br><span class="line">	ssl.truststore.password = null</span><br><span class="line">	ssl.truststore.type = JKS</span><br><span class="line">	transaction.timeout.ms = 60000</span><br><span class="line">	transactional.id = null</span><br><span class="line">	value.serializer = class org.apache.kafka.common.serialization.StringSerializer</span><br><span class="line"></span><br><span class="line">15:55:35,412 INFO  AppInfoParser - Kafka version : 1.0.0</span><br><span class="line">15:55:35,413 INFO  AppInfoParser - Kafka commitId : aaa7af6d4a11b29d</span><br><span class="line">15:55:35,437 INFO  Maxwell - Maxwell v1.19.1 is booting (MaxwellKafkaProducer), starting at Position[BinlogPosition[59ca6064-e0ea-11e8-9adc-00163e123442:1-289], lastHeartbeat=0]</span><br><span class="line">15:55:35,569 INFO  AbstractSchemaStore - Maxwell is capturing initial schema</span><br><span class="line">15:55:35,741 INFO  BinlogConnectorReplicator - Setting initial gtid to: 59ca6064-e0ea-11e8-9adc-00163e123442:1-289</span><br><span class="line">15:55:35,836 INFO  BinaryLogClient - Connected to 127.0.0.1:3341 at 59ca6064-e0ea-11e8-9adc-00163e123442:1-289 (sid:6379, cid:66)</span><br><span class="line">15:55:35,836 INFO  BinlogConnectorLifecycleListener - Binlog connected.</span><br></pre></td></tr></table></figure>
+<h4 id="kafka消费数据"><a href="#kafka消费数据" class="headerlink" title="kafka消费数据"></a>kafka消费数据</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">mysql&gt; create table t1(id int);</span><br><span class="line">Query OK, 0 rows affected (0.02 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; alter table t1 add name varchar(20);</span><br><span class="line">Query OK, 0 rows affected (0.03 sec)</span><br><span class="line">Records: 0  Duplicates: 0  Warnings: 0</span><br><span class="line"></span><br><span class="line">[root@canal maxwell]# kafka-console-consumer.sh --bootstrap-server 127.0.0.1:9092 --from-beginning --topic maxwell</span><br><span class="line"></span><br><span class="line">&#123;&quot;type&quot;:&quot;table-create&quot;,&quot;database&quot;:&quot;dba&quot;,&quot;table&quot;:&quot;t1&quot;,&quot;def&quot;:&#123;&quot;database&quot;:&quot;dba&quot;,&quot;charset&quot;:&quot;utf8mb4&quot;,&quot;table&quot;:&quot;t1&quot;,&quot;columns&quot;:[&#123;&quot;type&quot;:&quot;int&quot;,&quot;name&quot;:&quot;id&quot;,&quot;signed&quot;:true&#125;],&quot;primary-key&quot;:[]&#125;,&quot;ts&quot;:1542353432000,&quot;sql&quot;:&quot;create table t1(id int)&quot;&#125;</span><br><span class="line">&#123;&quot;type&quot;:&quot;table-alter&quot;,&quot;database&quot;:&quot;dba&quot;,&quot;table&quot;:&quot;t1&quot;,&quot;old&quot;:&#123;&quot;database&quot;:&quot;dba&quot;,&quot;charset&quot;:&quot;utf8mb4&quot;,&quot;table&quot;:&quot;t1&quot;,&quot;columns&quot;:[&#123;&quot;type&quot;:&quot;int&quot;,&quot;name&quot;:&quot;id&quot;,&quot;signed&quot;:true&#125;],&quot;primary-key&quot;:[]&#125;,&quot;def&quot;:&#123;&quot;database&quot;:&quot;dba&quot;,&quot;charset&quot;:&quot;utf8mb4&quot;,&quot;table&quot;:&quot;t1&quot;,&quot;columns&quot;:[&#123;&quot;type&quot;:&quot;int&quot;,&quot;name&quot;:&quot;id&quot;,&quot;signed&quot;:true&#125;,&#123;&quot;type&quot;:&quot;varchar&quot;,&quot;name&quot;:&quot;name&quot;,&quot;charset&quot;:&quot;utf8mb4&quot;&#125;],&quot;primary-key&quot;:[]&#125;,&quot;ts&quot;:1542353617000,&quot;sql&quot;:&quot;alter table t1 add name varchar(20)&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/15/Communication/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mag Bing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mag's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/15/Communication/" itemprop="url">Communication</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-15T09:56:12+08:00">
+                2018-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/生活感悟/" itemprop="url" rel="index">
+                    <span itemprop="name">生活感悟</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -1384,7 +1653,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1395,7 +1664,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">categories</span>
                 </a>
               </div>
@@ -1406,7 +1675,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
