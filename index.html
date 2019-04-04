@@ -1627,7 +1627,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/10/satlstack_install/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/10/satlstack安装/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Mag Bing">
@@ -1646,7 +1646,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/01/10/satlstack_install/" itemprop="url">satlstack_install</a></h1>
+                <a class="post-title-link" href="/2018/01/10/satlstack安装/" itemprop="url">satlstack_install</a></h1>
         
 
         <div class="post-meta">
@@ -1720,7 +1720,7 @@
       
         
           
-            <h3 id="1-Install-Saltstack"><a href="#1-Install-Saltstack" class="headerlink" title="1 Install Saltstack"></a>1 Install Saltstack</h3><h4 id="1-1-config-yum-repo"><a href="#1-1-config-yum-repo" class="headerlink" title="1.1 config yum repo"></a>1.1 config yum repo</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;/etc/yum.repos.d/satl-stack.repo&lt;&lt;EOF</span><br><span class="line">salt-latest]</span><br><span class="line">name=SaltStack Latest Release Channel for RHEL/Centos $releasever</span><br><span class="line">baseurl=https://repo.saltstack.com/yum/redhat/7/$basearch/latest</span><br><span class="line">failovermethod=priority</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/saltstack-signing-key</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">yum clean</span><br></pre></td></tr></table></figure>
+            <h3 id="1-Install-Saltstack"><a href="#1-Install-Saltstack" class="headerlink" title="1 Install Saltstack"></a>1 Install Saltstack</h3><h4 id="1-1-config-yum-repo"><a href="#1-1-config-yum-repo" class="headerlink" title="1.1 config yum repo"></a>1.1 config yum repo</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;/etc/yum.repos.d/satl-stack.repo&lt;&lt;EOF</span><br><span class="line">[salt-latest]</span><br><span class="line">name=SaltStack Latest Release Channel for RHEL/Centos $releasever</span><br><span class="line">baseurl=https://repo.saltstack.com/yum/redhat/7/$basearch/latest</span><br><span class="line">failovermethod=priority</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/saltstack-signing-key</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">yum clean</span><br></pre></td></tr></table></figure>
 <h4 id="1-2-install-pip"><a href="#1-2-install-pip" class="headerlink" title="1.2 install pip"></a>1.2 install pip</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install zlib*</span><br><span class="line">wget https://bootstrap.pypa.io/get-pip.py</span><br><span class="line">python get-pip.py</span><br></pre></td></tr></table></figure>
 <h4 id="1-3-install-salt-with-pip"><a href="#1-3-install-salt-with-pip" class="headerlink" title="1.3 install salt with pip"></a>1.3 install salt with pip</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install salt</span><br></pre></td></tr></table></figure>
 <h4 id="1-4-config-master"><a href="#1-4-config-master" class="headerlink" title="1.4 config master"></a>1.4 config master</h4><blockquote>

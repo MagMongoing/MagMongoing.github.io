@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="saltstack,devops," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1 Install Saltstack1.1 config yum repo1234567891011cat &amp;gt;/etc/yum.repos.d/satl-stack.repo&amp;lt;&amp;lt;EOF[salt-latest]name=SaltStack Latest Release Channel for RHEL/Centos $releaseverbaseurl=https://repo">
+<meta name="keywords" content="saltstack,devops">
+<meta property="og:type" content="article">
+<meta property="og:title" content="satlstack_install">
+<meta property="og:url" content="http://yoursite.com/2018/01/10/satlstack安装/index.html">
+<meta property="og:site_name" content="Mag&#39;s Note">
+<meta property="og:description" content="1 Install Saltstack1.1 config yum repo1234567891011cat &amp;gt;/etc/yum.repos.d/satl-stack.repo&amp;lt;&amp;lt;EOF[salt-latest]name=SaltStack Latest Release Channel for RHEL/Centos $releaseverbaseurl=https://repo">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-04-04T11:24:31.132Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="satlstack_install">
+<meta name="twitter:description" content="1 Install Saltstack1.1 config yum repo1234567891011cat &amp;gt;/etc/yum.repos.d/satl-stack.repo&amp;lt;&amp;lt;EOF[salt-latest]name=SaltStack Latest Release Channel for RHEL/Centos $releaseverbaseurl=https://repo">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/10/satlstack安装/"/>
+
+
+
+
+
+  <title>satlstack_install | Mag's Note</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mag's Note</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-readings">
+          <a href="/readings/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            Readings
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/10/satlstack安装/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mag Bing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mag's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">satlstack_install</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-10T23:30:43+08:00">
+                2018-01-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/devops/" itemprop="url" rel="index">
+                    <span itemprop="name">devops</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-Install-Saltstack"><a href="#1-Install-Saltstack" class="headerlink" title="1 Install Saltstack"></a>1 Install Saltstack</h3><h4 id="1-1-config-yum-repo"><a href="#1-1-config-yum-repo" class="headerlink" title="1.1 config yum repo"></a>1.1 config yum repo</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;/etc/yum.repos.d/satl-stack.repo&lt;&lt;EOF</span><br><span class="line">[salt-latest]</span><br><span class="line">name=SaltStack Latest Release Channel for RHEL/Centos $releasever</span><br><span class="line">baseurl=https://repo.saltstack.com/yum/redhat/7/$basearch/latest</span><br><span class="line">failovermethod=priority</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/saltstack-signing-key</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">yum clean</span><br></pre></td></tr></table></figure>
+<h4 id="1-2-install-pip"><a href="#1-2-install-pip" class="headerlink" title="1.2 install pip"></a>1.2 install pip</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install zlib*</span><br><span class="line">wget https://bootstrap.pypa.io/get-pip.py</span><br><span class="line">python get-pip.py</span><br></pre></td></tr></table></figure>
+<h4 id="1-3-install-salt-with-pip"><a href="#1-3-install-salt-with-pip" class="headerlink" title="1.3 install salt with pip"></a>1.3 install salt with pip</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install salt</span><br></pre></td></tr></table></figure>
+<h4 id="1-4-config-master"><a href="#1-4-config-master" class="headerlink" title="1.4 config master"></a>1.4 config master</h4><blockquote>
+<p>For safe, we can specify the interface to eth0:</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">interface: 172.17.177.86</span><br></pre></td></tr></table></figure>
+<h3 id="2-install-salt-ssh"><a href="#2-install-salt-ssh" class="headerlink" title="2 install salt-ssh"></a>2 install salt-ssh</h3><blockquote>
+<p>为了批量在被控服务器上批量安装salt-minion, salt-master主机上安装salt-ssh, 通过salt-ssh来批量安装salt-minion</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">yum -y install salt-ssh</span><br><span class="line"></span><br><span class="line"># shell script path</span><br><span class="line">mkdir /srv/salt/shell -p</span><br></pre></td></tr></table></figure>
+<h4 id="2-1-salt-ssh-config"><a href="#2-1-salt-ssh-config" class="headerlink" title="2.1 salt-ssh config"></a>2.1 salt-ssh config</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$ vim /etc/slat/roster</span><br><span class="line"></span><br><span class="line"># Sample salt-ssh config file</span><br><span class="line">#web1:</span><br><span class="line">#  host: 192.168.42.1 # The IP addr or DNS hostname</span><br><span class="line">#  user: fred         # Remote executions will be executed as user fred</span><br><span class="line">#  passwd: foobarbaz  # The password to use for login, if omitted, keys are used</span><br><span class="line">#  sudo: True         # Whether to sudo to root, not enabled by default</span><br><span class="line">#web2:</span><br><span class="line">#  host: 192.168.42.2</span><br><span class="line">hk:</span><br><span class="line">   host: ****</span><br><span class="line">   user: root</span><br><span class="line">   port: 22</span><br><span class="line">   priv: ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
+<h4 id="2-2-salt-ssh-test"><a href="#2-2-salt-ssh-test" class="headerlink" title="2.2 salt-ssh  test"></a>2.2 salt-ssh  test</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@jd-3 ~]# salt-ssh &quot;*&quot; test.ping </span><br><span class="line">hk:</span><br><span class="line">    True</span><br></pre></td></tr></table></figure>
+<h4 id="2-3-install-salt-minion-with-salt-ssh"><a href="#2-3-install-salt-minion-with-salt-ssh" class="headerlink" title="2.3 install salt-minion with salt-ssh"></a>2.3 install salt-minion with salt-ssh</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">cd /srv/salt</span><br><span class="line">mkdir minions/files -p</span><br><span class="line"></span><br><span class="line">cat &gt;install.sls&lt;&lt;EOF</span><br><span class="line">minion_key:</span><br><span class="line">  file.managed:</span><br><span class="line">    - name: /tmp/SALTSTACK-GPG-KEY.pub</span><br><span class="line">    - source: salt://minions/files/SALTSTACK-GPG-KEY.pub</span><br><span class="line">    - user: root</span><br><span class="line">    - group: root</span><br><span class="line">    - mode: 644</span><br><span class="line">  cmd.run:</span><br><span class="line">    - name: rpm --import /tmp/SALTSTACK-GPG-KEY.pub</span><br><span class="line">minion_yum:</span><br><span class="line">  file.managed:</span><br><span class="line">    - name: /etc/yum.repos.d/salt-latest.repo</span><br><span class="line">    - source: salt://minions/files/salt-latest.repo</span><br><span class="line">    - user: root</span><br><span class="line">    - group: root</span><br><span class="line">    - mode: 644</span><br><span class="line">  cmd.run:</span><br><span class="line">    - name: yum clean expire-cache &amp;&amp; yum -y update</span><br><span class="line">minion_install:</span><br><span class="line">  pkg.installed:</span><br><span class="line">#    - skip_verify: True</span><br><span class="line">    - pkgs:</span><br><span class="line">      - salt-minion</span><br><span class="line">    - require:</span><br><span class="line">      - file: minion_yum</span><br><span class="line">    - unless: rpm -qa | grep salt-minion</span><br><span class="line">minion_conf:</span><br><span class="line">  file.managed:</span><br><span class="line">    - name: /etc/salt/minion</span><br><span class="line">    - source: salt://minions/files/minion</span><br><span class="line">    - template: jinja</span><br><span class="line">    - defaults:</span><br><span class="line">      minion_id: &#123;&#123;grains[&apos;nodename&apos;]&#125;&#125;</span><br><span class="line">    - require:</span><br><span class="line">      - pkg: minion_install</span><br><span class="line">salt_service:</span><br><span class="line">  service.running:</span><br><span class="line">    - name: salt-minion</span><br><span class="line">    - enable: True</span><br><span class="line">    - require:</span><br><span class="line">      - file: minion_conf</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cd minions/files</span><br><span class="line"></span><br><span class="line">cat &gt;minion&lt;&lt;EOF</span><br><span class="line">master: 117.122.238.215</span><br><span class="line">id: &#123;&#123; minion_id &#125;&#125;</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &gt;salt-stack.repo&lt;&lt;EOF</span><br><span class="line">[salt-latest]</span><br><span class="line">name=SaltStack Latest Release Channel for RHEL/Centos $releasever</span><br><span class="line">baseurl=https://repo.saltstack.com/yum/redhat/7/$basearch/latest</span><br><span class="line">failovermethod=priority</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/saltstack-signing-key</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &gt;SALTSTACK-GPG-KEY.pub&lt;&lt;EOF</span><br><span class="line">-----BEGIN PGP PUBLIC KEY BLOCK-----</span><br><span class="line">Version: GnuPG v2</span><br><span class="line"></span><br><span class="line">mQENBFOpvpgBCADkP656H41i8fpplEEB8IeLhugyC2rTEwwSclb8tQNYtUiGdna9</span><br><span class="line">m38kb0OS2DDrEdtdQb2hWCnswxaAkUunb2qq18vd3dBvlnI+C4/xu5ksZZkRj+fW</span><br><span class="line">tArNR18V+2jkwcG26m8AxIrT+m4M6/bgnSfHTBtT5adNfVcTHqiT1JtCbQcXmwVw</span><br><span class="line">WbqS6v/LhcsBE//SHne4uBCK/GHxZHhQ5jz5h+3vWeV4gvxS3Xu6v1IlIpLDwUts</span><br><span class="line">kT1DumfynYnnZmWTGc6SYyIFXTPJLtnoWDb9OBdWgZxXfHEcBsKGha+bXO+m2tHA</span><br><span class="line">gNneN9i5f8oNxo5njrL8jkCckOpNpng18BKXABEBAAG0MlNhbHRTdGFjayBQYWNr</span><br><span class="line">YWdpbmcgVGVhbSA8cGFja2FnaW5nQHNhbHRzdGFjay5jb20+iQE4BBMBAgAiBQJT</span><br><span class="line">qb6YAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRAOCKFJ3le/vhkqB/0Q</span><br><span class="line">WzELZf4d87WApzolLG+zpsJKtt/ueXL1W1KA7JILhXB1uyvVORt8uA9FjmE083o1</span><br><span class="line">yE66wCya7V8hjNn2lkLXboOUd1UTErlRg1GYbIt++VPscTxHxwpjDGxDB1/fiX2o</span><br><span class="line">nK5SEpuj4IeIPJVE/uLNAwZyfX8DArLVJ5h8lknwiHlQLGlnOu9ulEAejwAKt9CU</span><br><span class="line">4oYTszYM4xrbtjB/fR+mPnYh2fBoQO4d/NQiejIEyd9IEEMd/03AJQBuMux62tjA</span><br><span class="line">/NwvQ9eqNgLw9NisFNHRWtP4jhAOsshv1WW+zPzu3ozoO+lLHixUIz7fqRk38q8Q</span><br><span class="line">9oNR31KvrkSNrFbA3D89uQENBFOpvpgBCADJ79iH10AfAfpTBEQwa6vzUI3Eltqb</span><br><span class="line">9aZ0xbZV8V/8pnuU7rqM7Z+nJgldibFk4gFG2bHCG1C5aEH/FmcOMvTKDhJSFQUx</span><br><span class="line">uhgxttMArXm2c22OSy1hpsnVG68G32Nag/QFEJ++3hNnbyGZpHnPiYgej3FrerQJ</span><br><span class="line">zv456wIsxRDMvJ1NZQB3twoCqwapC6FJE2hukSdWB5yCYpWlZJXBKzlYz/gwD/Fr</span><br><span class="line">GL578WrLhKw3UvnJmlpqQaDKwmV2s7MsoZogC6wkHE92kGPG2GmoRD3ALjmCvN1E</span><br><span class="line">PsIsQGnwpcXsRpYVCoW7e2nW4wUf7IkFZ94yOCmUq6WreWI4NggRcFC5ABEBAAGJ</span><br><span class="line">AR8EGAECAAkFAlOpvpgCGwwACgkQDgihSd5Xv74/NggA08kEdBkiWWwJZUZEy7cK</span><br><span class="line">WWcgjnRuOHd4rPeT+vQbOWGu6x4bxuVf9aTiYkf7ZjVF2lPn97EXOEGFWPZeZbH4</span><br><span class="line">vdRFH9jMtP+rrLt6+3c9j0M8SIJYwBL1+CNpEC/BuHj/Ra/cmnG5ZNhYebm76h5f</span><br><span class="line">T9iPW9fFww36FzFka4VPlvA4oB7ebBtquFg3sdQNU/MmTVV4jPFWXxh4oRDDR+8N</span><br><span class="line">1bcPnbB11b5ary99F/mqr7RgQ+YFF0uKRE3SKa7a+6cIuHEZ7Za+zhPaQlzAOZlx</span><br><span class="line">fuBmScum8uQTrEF5+Um5zkwC7EXTdH1co/+/V/fpOtxIg4XO4kcugZefVm5ERfVS</span><br><span class="line">MA==</span><br><span class="line">=dtMN</span><br><span class="line">-----END PGP PUBLIC KEY BLOCK-----</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">salt-ssh &quot;hk&quot; state.sls install</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/saltstack/" rel="tag"># saltstack</a>
+          
+            <a href="/tags/devops/" rel="tag"># devops</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/11/mysql-functions/" rel="prev" title="mysql-functions">
+                mysql-functions <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Mag Bing</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">15</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:magbon6@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Install-Saltstack"><span class="nav-text">1 Install Saltstack</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-config-yum-repo"><span class="nav-text">1.1 config yum repo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-install-pip"><span class="nav-text">1.2 install pip</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-install-salt-with-pip"><span class="nav-text">1.3 install salt with pip</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-config-master"><span class="nav-text">1.4 config master</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-install-salt-ssh"><span class="nav-text">2 install salt-ssh</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-salt-ssh-config"><span class="nav-text">2.1 salt-ssh config</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-salt-ssh-test"><span class="nav-text">2.2 salt-ssh  test</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-install-salt-minion-with-salt-ssh"><span class="nav-text">2.3 install salt-minion with salt-ssh</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mag Bing</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
